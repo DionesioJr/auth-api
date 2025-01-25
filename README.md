@@ -1,4 +1,4 @@
-# Documentação da API de Usuários
+# Auth API - Microservice
 
 Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autenticação, permissões e módulos. É projetada para sistemas _multi-tenant_, oferecendo endpoints para configurar e gerenciar dados de forma segura e eficiente.
 
@@ -167,3 +167,16 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 | ❌  | GET        | /profiles/:profileId/permissions               | Lista as permissões associadas a um perfil. |
 | ❌  | POST       | /profiles/:profileId/permissions               | Associa permissões a um perfil.             |
 | ❌  | DELETE     | /profiles/:profileId/permissions/:permissionId | Remove a permissão de um perfil.            |
+
+---
+
+### **9. Gerenciamento de Chaves de API**
+
+|     | Verbo HTTP | Endpoint URL                | Descrição                                            |
+| --- | ---------- | --------------------------- | ---------------------------------------------------- |
+| ❌  | GET        | /api-keys                   | Lista todas as chaves de API associadas a uma conta. |
+| ❌  | POST       | /api-keys                   | Gera uma nova chave de API.                          |
+| ❌  | DELETE     | /api-keys/:keyId            | Remove uma chave de API específica.                  |
+| ❌  | PUT        | /api-keys/:keyId/deactivate | Desativa uma chave de API específica.                |
+
+---
