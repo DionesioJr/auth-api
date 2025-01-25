@@ -15,16 +15,26 @@ model access_key_status {
 }
 
 model accounts {
-  id             Int              @id @default(autoincrement()) @db.UnsignedInt
-  tenant_id      String           @unique(map: "tenant_id_UNIQUE") @db.VarChar(255)
+  id             Int              @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  tenant_id      Int              @db.UnsignedInt
   is_active      Boolean          @default(true)
   is_deleted     Boolean          @default(false)
-  accounts_users accounts_users[] @ignore
+  name           String?          @db.VarChar(255)
+  email          String?          @db.VarChar(255)
+  phone          String?          @db.VarChar(15)
+  logo           String?          @db.LongText
+  created_at     DateTime         @default(now()) @db.Timestamp(0)
+  updated_at     DateTime         @default(now()) @db.Timestamp(0)
+  tenants        tenants          @relation(fields: [tenant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_accounts_tenants1")
+  accounts_users accounts_users[]
   api_keys       api_keys[]
+
+  @@id([id, tenant_id])
+  @@index([tenant_id], map: "fk_accounts_tenants1_idx")
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
 model accounts_users {
+  id         Int      @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   account_id Int      @db.UnsignedInt
   user_id    Int      @db.UnsignedInt
   is_owner   Int      @default(0) @db.TinyInt
@@ -33,7 +43,6 @@ model accounts_users {
 
   @@index([user_id], map: "fk_accounts_has_users_users_idx")
   @@index([account_id], map: "fk_table1_accounts1_idx")
-  @@ignore
 }
 
 model api_key_status {
@@ -67,24 +76,34 @@ model languages {
 }
 
 model modules {
-  id                  Int                   @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                String                @db.VarChar(255)
-  description         String?               @db.Text
-  created_at          DateTime              @default(now()) @db.Timestamp(0)
-  updated_at          DateTime              @default(now()) @db.Timestamp(0)
-  profile_permissions profile_permissions[]
+  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(255)
+  description          String?                @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamp(0)
+  updated_at           DateTime               @default(now()) @db.Timestamp(0)
+  profiles_permissions profiles_permissions[]
 }
 
 model permissions {
-  id                  Int                   @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                String                @db.VarChar(255)
-  description         String?               @db.Text
-  created_at          DateTime              @default(now()) @db.Timestamp(0)
-  updated_at          DateTime              @default(now()) @db.Timestamp(0)
-  profile_permissions profile_permissions[]
+  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(255)
+  description          String?                @db.Text
+  created_at           DateTime               @default(now()) @db.Timestamp(0)
+  updated_at           DateTime               @default(now()) @db.Timestamp(0)
+  profiles_permissions profiles_permissions[]
 }
 
-model profile_permissions {
+model profiles {
+  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  name                 String                 @db.VarChar(255)
+  description          String?                @db.VarChar(255)
+  created_at           DateTime               @default(now()) @db.Timestamp(0)
+  updated_at           DateTime               @default(now()) @db.Timestamp(0)
+  profiles_permissions profiles_permissions[]
+  users_profiles       users_profiles[]
+}
+
+model profiles_permissions {
   id            Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   profile_id    Int         @db.UnsignedInt
   module_id     Int         @db.UnsignedInt
@@ -101,14 +120,20 @@ model profile_permissions {
   @@index([profile_id], map: "fk_profile_permissions_profiles1_idx")
 }
 
-model profiles {
-  id                  Int                   @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                String                @db.VarChar(255)
-  description         String?               @db.VarChar(255)
-  created_at          DateTime              @default(now()) @db.Timestamp(0)
-  updated_at          DateTime              @default(now()) @db.Timestamp(0)
-  profile_permissions profile_permissions[]
-  users_profiles      users_profiles[]
+model tenants {
+  id                Int        @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  name              String?    @db.VarChar(255)
+  subdomain         String     @unique(map: "subdomain_UNIQUE") @db.VarChar(255)
+  database_url      String     @db.VarChar(512)
+  database_name     String     @db.VarChar(255)
+  database_user     String     @db.VarChar(255)
+  database_password String     @db.VarChar(255)
+  database_host     String     @db.VarChar(255)
+  database_port     Int
+  is_active         Boolean    @default(true)
+  created_at        DateTime   @default(now()) @db.Timestamp(0)
+  updated_at        DateTime   @default(now()) @db.Timestamp(0)
+  accounts          accounts[]
 }
 
 model time_zones {
@@ -130,7 +155,7 @@ model users {
   is_deleted                 Int                          @default(0) @db.TinyInt
   created_at                 DateTime                     @default(now()) @db.Timestamp(0)
   updated_at                 DateTime                     @default(now()) @db.Timestamp(0)
-  accounts_users             accounts_users[]             @ignore
+  accounts_users             accounts_users[]
   users_access_keys          users_access_keys[]
   users_languages            users_languages[]
   users_notifications_emails users_notifications_emails[]

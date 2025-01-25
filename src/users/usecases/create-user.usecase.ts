@@ -37,17 +37,28 @@ export class CreateUserUseCase {
     }
 
     try {
-      // criando uma senha caso o usuário não passe uma senha
+      // Criar uma senha aleatória caso o usuário não forneça uma senha
       if (!createUserDto.password) {
         createUserDto.password = randomBytes(5).toString('hex');
       }
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-      // Criar o usuário com a senha criptografada
+      // Preparar os dados para criação do usuário e vinculação à conta
+      const accountUserData: any = {
+        account_id: createUserDto.account_id,
+      };
+      if (createUserDto.is_owner === 1) {
+        accountUserData.is_owner = 1;
+      }
+
+      // Criar o usuário vinculado à conta
       const user = await this.prisma.users.create({
         data: {
           ...createUserDto, // Copia os dados do DTO
           password: hashedPassword, // Substitui a senha pela versão criptografada
+          accounts_users: {
+            create: accountUserData,
+          },
         },
       });
 

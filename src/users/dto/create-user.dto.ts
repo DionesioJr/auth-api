@@ -8,6 +8,9 @@ import {
 import { Type } from 'class-transformer';
 
 export class CreateUserDto {
+  @IsInt()
+  account_id?: number;
+
   @IsOptional()
   @IsString()
   @MaxLength(255)
@@ -44,4 +47,8 @@ export class CreateUserDto {
 
   @IsInt()
   is_deleted: number;
+
+  @IsOptional()
+  @IsInt()
+  is_owner?: number; // Define se o usuário será proprietário da conta (1 para true)
 }
