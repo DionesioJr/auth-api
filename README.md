@@ -48,11 +48,11 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 |     | Verbo HTTP | Endpoint URL | Descrição                            |
 | --- | ---------- | ------------ | ------------------------------------ |
-| ❌  | GET        | /users       | Lista todos os usuários.             |
-| ❌  | GET        | /users/:id   | Detalha um usuário específico.       |
-| ❌  | POST       | /users       | Cria um novo usuário.                |
-| ❌  | PUT        | /users/:id   | Atualizar informações de um usuário. |
-| ❌  | DELETE     | /users/:id   | Remove um usuário.                   |
+| ✅  | GET        | /users       | Lista todos os usuários.             |
+| ✅  | GET        | /users/:id   | Detalha um usuário específico.       |
+| ✅  | POST       | /users       | Cria um novo usuário.                |
+| ✅  | PUT        | /users/:id   | Atualizar informações de um usuário. |
+| ✅  | DELETE     | /users/:id   | Remove um usuário.                   |
 
 #### **Idiomas de Usuários**
 
