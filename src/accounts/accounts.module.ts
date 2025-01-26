@@ -8,8 +8,11 @@ import { FindOneAccountUseCase } from './usecases/find-one-account.usecase';
 import { UpdateAccountUseCase } from './usecases/update-account.usecase';
 import { RemoveAccountUseCase } from './usecases/remove-account.usecase';
 import { FindUsersByAccountUseCase } from './usecases/find-users-by-account.usecase';
+import { TenantsModule } from 'src/tenants/tenants.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
+  imports: [TenantsModule, UsersModule],
   controllers: [AccountsController],
   providers: [
     PrismaService,
