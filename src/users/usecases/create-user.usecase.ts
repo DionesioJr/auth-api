@@ -15,20 +15,24 @@ export class CreateUserUseCase {
   async execute(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
     this.logger.log('Creating a new user.');
 
+    const { email, phone } = createUserDto;
+
     // Verificar se o email já está em uso
     const existingUserByEmail = await this.prisma.users.findUnique({
-      where: { email: createUserDto.email },
+      where: { email: email },
     });
     if (existingUserByEmail) {
       throw new ConflictException('Email already in use');
     }
 
     // Verificar se o telefone já está em uso
-    const existingUserByPhone = await this.prisma.users.findUnique({
-      where: { phone: createUserDto.phone },
-    });
-    if (existingUserByPhone) {
-      throw new ConflictException('Phone number already in use');
+    if (phone) {
+      const existingUserByPhone = await this.prisma.users.findUnique({
+        where: { phone: phone },
+      });
+      if (existingUserByPhone) {
+        throw new ConflictException('Phone number already in use');
+      }
     }
 
     try {

@@ -21,5 +21,6 @@ import { RemoveUserUseCase } from './usecases/remove-user.usecase';
     UpdateUserUseCase,
     RemoveUserUseCase,
   ],
+  exports: [UsersService],
 })
 export class UsersModule {}

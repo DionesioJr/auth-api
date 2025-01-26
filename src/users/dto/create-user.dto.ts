@@ -2,15 +2,9 @@ import { IsEmail, IsOptional, IsString, IsInt, MaxLength } from 'class-validator
 import { Type } from 'class-transformer';
 
 export class CreateUserDto {
-  @IsOptional()
   @IsString()
   @MaxLength(255)
-  first_name?: string;
-
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  last_name?: string;
+  name: string;
 
   @IsEmail()
   @MaxLength(255)
@@ -33,11 +27,13 @@ export class CreateUserDto {
   @IsString()
   avatar?: string;
 
+  @IsOptional()
   @IsInt()
-  is_active: number;
+  is_active?: number;
 
+  @IsOptional()
   @IsInt()
-  is_deleted: number;
+  is_deleted?: number;
 
   @IsOptional()
   @IsInt()
