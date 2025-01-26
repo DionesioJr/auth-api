@@ -11,7 +11,7 @@ export class CreateAccountUseCase {
   private readonly logger = new Logger(CreateAccountUseCase.name);
 
   async execute(createAccountDto: CreateAccountDto): Promise<ResponseAccountDto> {
-    const { email, tenantId } = createAccountDto;
+    const { email } = createAccountDto;
 
     this.logger.log(`Creating a new account with email: ${email}`);
 
@@ -27,9 +27,6 @@ export class CreateAccountUseCase {
       const account = await this.prisma.accounts.create({
         data: {
           ...createAccountDto,
-          tenants: {
-            connect: { id: tenantId }, // Conectar ao tenant existente
-          },
         },
       });
 
