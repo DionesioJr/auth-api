@@ -32,11 +32,10 @@ export class CreateTenantUseCase {
         name: createTenantDto.name,
         subdomain,
         is_active: createTenantDto.is_active ?? true,
-        database_url: process.env.DEFAULT_DATABASE_URL || '',
-        database_host: process.env.DEFAULT_DATABASE_HOST!,
-        database_port: parseInt(process.env.DEFAULT_DATABASE_PORT!, 10),
-        database_user: process.env.DEFAULT_DATABASE_USER!,
-        database_password: process.env.DEFAULT_DATABASE_PASSWORD!,
+        database_host: process.env.DATABASE_HOST ?? '',
+        database_port: parseInt(process.env.DATABASE_PORT ?? '', 10),
+        database_user: process.env.DATABASE_USER ?? '',
+        database_password: process.env.DATABASE_PASSWORD ?? '',
         database_name: `${subdomain}_app_db`,
       };
 

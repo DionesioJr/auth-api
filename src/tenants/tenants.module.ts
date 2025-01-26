@@ -7,7 +7,7 @@ import { FindAllTenantsUseCase } from './usecases/find-all-tenants.usecase';
 import { FindOneTenantUseCase } from './usecases/find-one-tenant.usecase';
 import { UpdateTenantUseCase } from './usecases/update-tenant.usecase';
 import { RemoveTenantUseCase } from './usecases/remove-tenant.usecase';
-import { FindAccountsByTenantUseCase } from './usecases/find-accounts-by-tenant.usecase';
+import { FindAccountsByTenantIdUseCase } from './usecases/find-accounts-by-tenant-id.usecase';
 import { ValidateTenantSubdomainUseCase } from './usecases/validate-tenant-subdomain.usecase';
 
 @Module({
@@ -20,7 +20,7 @@ import { ValidateTenantSubdomainUseCase } from './usecases/validate-tenant-subdo
     FindOneTenantUseCase,
     UpdateTenantUseCase,
     RemoveTenantUseCase,
-    FindAccountsByTenantUseCase,
+    FindAccountsByTenantIdUseCase,
     ValidateTenantSubdomainUseCase,
   ],
 })

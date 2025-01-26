@@ -11,10 +11,6 @@ export class CreateTenantDto {
   subdomain: string;
 
   @IsString()
-  @MaxLength(512)
-  database_url: string;
-
-  @IsString()
   @MaxLength(255)
   database_name: string;
 

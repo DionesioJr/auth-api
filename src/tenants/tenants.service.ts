@@ -6,7 +6,7 @@ import { FindAllTenantsUseCase } from './usecases/find-all-tenants.usecase';
 import { FindOneTenantUseCase } from './usecases/find-one-tenant.usecase';
 import { UpdateTenantUseCase } from './usecases/update-tenant.usecase';
 import { RemoveTenantUseCase } from './usecases/remove-tenant.usecase';
-import { FindAccountsByTenantUseCase } from './usecases/find-accounts-by-tenant.usecase';
+import { FindAccountsByTenantIdUseCase } from './usecases/find-accounts-by-tenant-id.usecase';
 import { ValidateTenantSubdomainUseCase } from './usecases/validate-tenant-subdomain.usecase';
 
 @Injectable()
@@ -17,7 +17,7 @@ export class TenantsService {
     private readonly findOneTenantUseCase: FindOneTenantUseCase,
     private readonly updateTenantUseCase: UpdateTenantUseCase,
     private readonly removeTenantUseCase: RemoveTenantUseCase,
-    private readonly findAccountsByTenantUseCase: FindAccountsByTenantUseCase,
+    private readonly findAccountsByTenantIdUseCase: FindAccountsByTenantIdUseCase,
     private readonly validateTenantSubdomainUseCase: ValidateTenantSubdomainUseCase,
   ) {}
 
@@ -42,7 +42,7 @@ export class TenantsService {
   }
 
   async findAccountsByTenant(tenantId: number) {
-    return this.findAccountsByTenantUseCase.execute(tenantId);
+    return this.findAccountsByTenantIdUseCase.execute(tenantId);
   }
 
   async validateSubdomain(subdomain: string) {

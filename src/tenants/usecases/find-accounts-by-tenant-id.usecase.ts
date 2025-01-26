@@ -4,10 +4,10 @@ import { plainToInstance } from 'class-transformer';
 import { ResponseAccountDto } from '../../accounts/dto/response-account.dto';
 
 @Injectable()
-export class FindAccountsByTenantUseCase {
+export class FindAccountsByTenantIdUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
-  private readonly logger = new Logger(FindAccountsByTenantUseCase.name);
+  private readonly logger = new Logger(FindAccountsByTenantIdUseCase.name);
 
   async execute(tenantId: number): Promise<ResponseAccountDto[]> {
     this.logger.log(`Fetching accounts for tenant ID: ${tenantId}.`);
