@@ -2,9 +2,6 @@ import { IsEmail, IsOptional, IsString, IsInt, MaxLength } from 'class-validator
 import { Type } from 'class-transformer';
 
 export class CreateUserDto {
-  @IsInt()
-  account_id?: number;
-
   @IsOptional()
   @IsString()
   @MaxLength(255)
