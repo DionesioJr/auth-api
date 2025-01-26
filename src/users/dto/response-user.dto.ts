@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsOptional,
-  IsString,
-  IsInt,
-  MaxLength,
-} from 'class-validator';
+import { IsEmail, IsOptional, IsString, IsInt, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class ResponseUserDto {

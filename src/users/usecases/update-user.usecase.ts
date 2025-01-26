@@ -1,10 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  ConflictException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
@@ -16,10 +11,7 @@ export class UpdateUserUseCase {
 
   private readonly logger = new Logger(UpdateUserUseCase.name);
 
-  async execute(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<ResponseUserDto> {
+  async execute(id: number, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
     this.logger.log(`Updating user with ID: ${id}.`);
 
     // Verificar se o usuário existe
@@ -49,7 +41,7 @@ export class UpdateUserUseCase {
     }
 
     // Se a senha foi fornecida, criptografar a nova senha
-    let updatedData = { ...updateUserDto };
+    const updatedData = { ...updateUserDto };
 
     if (updateUserDto.password) {
       const hashedPassword = await bcrypt.hash(updateUserDto.password, 10);

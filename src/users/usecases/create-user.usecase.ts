@@ -1,10 +1,5 @@
 import * as bcrypt from 'bcrypt';
-import {
-  Injectable,
-  Logger,
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable, Logger, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
@@ -43,31 +38,16 @@ export class CreateUserUseCase {
       }
       const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
 
-      // Preparar os dados para criação do usuário e vinculação à conta
-      const accountUserData: any = {
-        account_id: createUserDto.account_id,
-      };
-      if (createUserDto.is_owner === 1) {
-        accountUserData.is_owner = 1;
-      }
-
       // Criar o usuário vinculado à conta
       const user = await this.prisma.users.create({
         data: {
           ...createUserDto, // Copia os dados do DTO
           password: hashedPassword, // Substitui a senha pela versão criptografada
-          accounts_users: {
-            create: accountUserData,
-          },
         },
       });
 
-      // Transforma os dados caso necessário
-      const transformerData = {
-        ...user,
-      };
-
-      return plainToInstance(ResponseUserDto, transformerData);
+      // Transforma os dados para a resposta
+      return plainToInstance(ResponseUserDto, user);
     } catch (error) {
       this.logger.error('Error occurred while creating user', error);
       throw new InternalServerErrorException('Failed to create user');

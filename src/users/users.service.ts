@@ -30,10 +30,7 @@ export class UsersService {
     return this.findOneUserUseCase.execute(id);
   }
 
-  async update(
-    id: number,
-    updateUserDto: UpdateUserDto,
-  ): Promise<ResponseUserDto> {
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
     return this.updateUserUseCase.execute(id, updateUserDto);
   }
 
