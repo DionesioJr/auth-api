@@ -1,14 +1,16 @@
-import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsEmail, IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateAccountDto {
+  @IsInt()
+  tenantId: number;
+
   @IsString()
   @MaxLength(255)
   name: string;
 
-  @IsOptional()
   @IsEmail()
   @MaxLength(255)
-  email?: string;
+  email: string;
 
   @IsOptional()
   @IsString()

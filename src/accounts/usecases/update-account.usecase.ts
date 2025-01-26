@@ -10,10 +10,7 @@ export class UpdateAccountUseCase {
 
   private readonly logger = new Logger(UpdateAccountUseCase.name);
 
-  async execute(
-    id: number,
-    updateAccountDto: UpdateAccountDto,
-  ): Promise<ResponseAccountDto> {
+  async execute(id: number, updateAccountDto: UpdateAccountDto): Promise<ResponseAccountDto> {
     this.logger.log(`Updating account with ID: ${id}.`);
 
     const existingAccount = await this.prisma.accounts.findUnique({
