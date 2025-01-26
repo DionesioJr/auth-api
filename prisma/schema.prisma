@@ -124,7 +124,6 @@ model tenants {
   id                Int        @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   name              String?    @db.VarChar(255)
   subdomain         String     @unique(map: "subdomain_UNIQUE") @db.VarChar(255)
-  database_url      String     @db.VarChar(512)
   database_name     String     @db.VarChar(255)
   database_user     String     @db.VarChar(255)
   database_password String     @db.VarChar(255)
