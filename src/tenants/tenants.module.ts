@@ -23,5 +23,6 @@ import { ValidateTenantSubdomainUseCase } from './usecases/validate-tenant-subdo
     FindAccountsByTenantIdUseCase,
     ValidateTenantSubdomainUseCase,
   ],
+  exports: [TenantsService],
 })
 export class TenantsModule {}

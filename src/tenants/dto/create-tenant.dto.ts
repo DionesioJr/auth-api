@@ -1,4 +1,4 @@
-import { IsBoolean, IsInt, IsOptional, IsString, MaxLength } from 'class-validator';
+import { IsBoolean, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class CreateTenantDto {
   @IsOptional()
@@ -10,25 +10,7 @@ export class CreateTenantDto {
   @MaxLength(255)
   subdomain: string;
 
-  @IsString()
-  @MaxLength(255)
-  database_name: string;
-
-  @IsString()
-  @MaxLength(255)
-  database_user: string;
-
-  @IsString()
-  @MaxLength(255)
-  database_password: string;
-
-  @IsString()
-  @MaxLength(255)
-  database_host: string;
-
-  @IsInt()
-  database_port: number;
-
+  @IsOptional()
   @IsBoolean()
-  is_active: boolean;
+  is_active?: boolean;
 }
