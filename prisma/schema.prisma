@@ -20,7 +20,7 @@ model accounts {
   is_active      Boolean          @default(true)
   is_deleted     Boolean          @default(false)
   name           String?          @db.VarChar(255)
-  email          String?          @db.VarChar(255)
+  email          String           @unique(map: "email_UNIQUE") @db.VarChar(255)
   phone          String?          @db.VarChar(15)
   logo           String?          @db.LongText
   created_at     DateTime         @default(now()) @db.Timestamp(0)
