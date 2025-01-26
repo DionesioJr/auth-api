@@ -14,8 +14,7 @@ export class CreateTenantUseCase {
   private readonly logger = new Logger(CreateTenantUseCase.name);
 
   async execute(createTenantDto: CreateTenantDto): Promise<ResponseTenantDto> {
-    const { subdomain, database_name, database_user, database_password, database_host, database_port } =
-      createTenantDto;
+    const { subdomain } = createTenantDto;
 
     this.logger.log(`Creating a new tenant with subdomain: ${subdomain}`);
 
