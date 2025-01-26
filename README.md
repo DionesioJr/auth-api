@@ -20,31 +20,63 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ## Áreas Funcionais
 
-1. Gerenciamento de Contas
-2. Gerenciamento de Usuários
-3. Perfis
-4. Idiomas
-5. Notificações
-6. Time Zones
-7. Autenticação
-8. Módulos e Permissões
+❌ Autenticação
+✅ Gerenciamento de Tenants
+✅ Gerenciamento de Contas
+✅ Gerenciamento de Usuários
+❌ Idiomas de Usuários
+❌ Fusos Horários de Usuários
+❌ Gerenciamento de Perfis
+❌ Associação de Perfis a Usuários
+❌ Gerenciamento de Idiomas
+❌ Notificações por E-mail
+❌ Gerenciamento de Fusos Horários (Time Zones)
+❌ Módulos e Permissões
+❌ Permissões
+❌ Associação de Permissões a Perfis
+❌ Gerenciamento de Chaves de API
 
 ---
 
-### **1. Gerenciamento de Contas**
+### **Autenticação**
+
+|     | Verbo HTTP | Endpoint URL   | Descrição                                                  |
+| --- | ---------- | -------------- | ---------------------------------------------------------- |
+| ❌  | POST       | /auth/login    | Realiza login e retorna um token JWT.                      |
+| ❌  | POST       | /auth/logout   | Encerra a sessão do usuário.                               |
+| ❌  | POST       | /auth/refresh  | Renova o token de autenticação.                            |
+| ❌  | POST       | /auth/validate | Valida o token e a origem da requisição (dispositivo, IP). |
+
+---
+
+### **Gerenciamento de Tenants**
+
+|     | Verbo HTTP | Endpoint URL                           | Descrição                                           |
+| --- | ---------- | -------------------------------------- | --------------------------------------------------- |
+| ✅  | GET        | /tenants                               | Lista todos os tenants cadastrados no sistema.      |
+| ✅  | GET        | /tenants/:id                           | Detalha um tenant específico.                       |
+| ✅  | POST       | /tenants                               | Cria um novo tenant com as informações necessárias. |
+| ✅  | PUT        | /tenants/:id                           | Atualiza informações de um tenant específico.       |
+| ✅  | DELETE     | /tenants/:id                           | Remove um tenant do sistema.                        |
+| ✅  | GET        | /tenants/:id/accounts                  | Lista as contas associadas a um tenant específico.  |
+| ✅  | GET        | /tenants/validate-subdomain/:subdomain | Valida se um subdomínio já foi cadastrado.          |
+
+---
+
+### **Gerenciamento de Contas**
 
 |     | Verbo HTTP | Endpoint URL               | Descrição                                            |
 | --- | ---------- | -------------------------- | ---------------------------------------------------- |
-| ❌  | GET        | /accounts                  | Lista todas as contas registradas no sistema.        |
-| ❌  | GET        | /accounts/:id              | Detalha uma conta específica.                        |
-| ❌  | POST       | /accounts                  | Cria uma nova conta.                                 |
-| ❌  | PUT        | /accounts/:id              | Atualizar informações de uma conta.                  |
-| ❌  | DELETE     | /accounts/:id              | Remove uma conta.                                    |
-| ❌  | GET        | /accounts/:accountId/users | Lista de usuários associados a uma conta específica. |
+| ✅  | GET        | /accounts                  | Lista todas as contas registradas no sistema.        |
+| ✅  | GET        | /accounts/:id              | Detalha uma conta específica.                        |
+| ✅  | POST       | /accounts                  | Cria uma nova conta.                                 |
+| ✅  | PUT        | /accounts/:id              | Atualizar informações de uma conta.                  |
+| ✅  | DELETE     | /accounts/:id              | Remove uma conta.                                    |
+| ✅  | GET        | /accounts/:accountId/users | Lista de usuários associados a uma conta específica. |
 
 ---
 
-### **2. Gerenciamento de Usuários**
+### **Gerenciamento de Usuários**
 
 |     | Verbo HTTP | Endpoint URL | Descrição                            |
 | --- | ---------- | ------------ | ------------------------------------ |
@@ -72,7 +104,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-### **3. Gerenciamento de Perfis**
+### **Gerenciamento de Perfis**
 
 |     | Verbo HTTP | Endpoint URL  | Descrição                           |
 | --- | ---------- | ------------- | ----------------------------------- |
@@ -92,7 +124,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-### **4. Gerenciamento de Idiomas**
+### **Gerenciamento de Idiomas**
 
 |     | Verbo HTTP | Endpoint URL   | Descrição                           |
 | --- | ---------- | -------------- | ----------------------------------- |
@@ -104,7 +136,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-### **5. Notificações por E-mail**
+### **Notificações por E-mail**
 
 |     | Verbo HTTP | Endpoint URL                            | Descrição                                                |
 | --- | ---------- | --------------------------------------- | -------------------------------------------------------- |
@@ -115,7 +147,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-### **6. Gerenciamento de Fusos Horários (Time Zones)**
+### **Gerenciamento de Fusos Horários (Time Zones)**
 
 |     | Verbo HTTP | Endpoint URL   | Descrição                                 |
 | --- | ---------- | -------------- | ----------------------------------------- |
@@ -127,18 +159,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-### **7. Autenticação**
-
-|     | Verbo HTTP | Endpoint URL   | Descrição                                                  |
-| --- | ---------- | -------------- | ---------------------------------------------------------- |
-| ❌  | POST       | /auth/login    | Realiza login e retorna um token JWT.                      |
-| ❌  | POST       | /auth/logout   | Encerra a sessão do usuário.                               |
-| ❌  | POST       | /auth/refresh  | Renova o token de autenticação.                            |
-| ❌  | POST       | /auth/validate | Valida o token e a origem da requisição (dispositivo, IP). |
-
----
-
-### **8. Módulos e Permissões**
+### **Módulos e Permissões**
 
 #### **Módulos**
 
@@ -170,7 +191,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-### **9. Gerenciamento de Chaves de API**
+### **Gerenciamento de Chaves de API**
 
 |     | Verbo HTTP | Endpoint URL                | Descrição                                            |
 | --- | ---------- | --------------------------- | ---------------------------------------------------- |
