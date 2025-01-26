@@ -20,21 +20,21 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ## Áreas Funcionais
 
-❌ Autenticação
-✅ Gerenciamento de Tenants
-✅ Gerenciamento de Contas
-✅ Gerenciamento de Usuários
-❌ Idiomas de Usuários
-❌ Fusos Horários de Usuários
-❌ Gerenciamento de Perfis
-❌ Associação de Perfis a Usuários
-❌ Gerenciamento de Idiomas
-❌ Notificações por E-mail
-❌ Gerenciamento de Fusos Horários (Time Zones)
-❌ Módulos e Permissões
-❌ Permissões
-❌ Associação de Permissões a Perfis
-❌ Gerenciamento de Chaves de API
+- ❌ Autenticação
+- ✅ Gerenciamento de Tenants
+- ✅ Gerenciamento de Contas
+- ✅ Gerenciamento de Usuários
+- ❌ Idiomas de Usuários
+- ❌ Fusos Horários de Usuários
+- ❌ Gerenciamento de Perfis
+- ❌ Associação de Perfis a Usuários
+- ❌ Gerenciamento de Idiomas
+- ❌ Notificações por E-mail
+- ❌ Gerenciamento de Fusos Horários (Time Zones)
+- ❌ Módulos e Permissões
+- ❌ Permissões
+- ❌ Associação de Permissões a Perfis
+- ❌ Gerenciamento de Chaves de API
 
 ---
 
