@@ -122,7 +122,6 @@ model profiles_permissions {
 
 model tenants {
   id                Int        @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name              String?    @db.VarChar(255)
   subdomain         String     @unique(map: "subdomain_UNIQUE") @db.VarChar(255)
   database_name     String     @db.VarChar(255)
   database_user     String     @db.VarChar(255)
@@ -147,7 +146,7 @@ model users {
   email                      String                       @unique(map: "email_UNIQUE") @db.VarChar(255)
   email_verified_at          DateTime?                    @db.DateTime(0)
   password                   String?                      @db.Text
-  phone                      String?                      @unique(map: "phone_UNIQUE") @db.VarChar(15)
+  phone                      String?                      @db.VarChar(15)
   avatar                     String?                      @db.LongText
   is_active                  Int                          @default(1) @db.TinyInt
   is_deleted                 Int                          @default(0) @db.TinyInt
