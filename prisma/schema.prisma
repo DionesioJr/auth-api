@@ -7,13 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model access_key_status {
-  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name              String              @db.VarChar(255)
-  description       String?             @db.VarChar(255)
-  users_access_keys users_access_keys[]
-}
-
 model accounts {
   id             Int              @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
   tenant_id      Int              @db.UnsignedInt
@@ -160,20 +153,19 @@ model users {
 }
 
 model users_access_keys {
-  id                   Int               @id @unique(map: "id_UNIQUE") @db.UnsignedInt
-  user_id              Int               @db.UnsignedInt
-  access_key_status_id Int               @db.UnsignedInt
-  access_token         String            @db.Text
-  refresh_token        String            @db.Text
-  device_name          String?           @db.VarChar(255)
-  ip_address           String?           @db.VarChar(45)
-  user_agent           String?           @db.Text
-  last_used_at         DateTime?         @default(now()) @db.Timestamp(0)
-  created_at           DateTime          @default(now()) @db.Timestamp(0)
-  access_key_status    access_key_status @relation(fields: [access_key_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_access_keys_access_key_status1")
-  users                users             @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tokens_users1")
+  id            Int       @id @unique(map: "id_UNIQUE") @db.UnsignedInt
+  user_id       Int       @db.UnsignedInt
+  access_token  String    @db.Text
+  refresh_token String    @db.Text
+  is_active     Int       @default(1) @db.TinyInt
+  device_name   String?   @db.VarChar(255)
+  ip_address    String?   @db.VarChar(45)
+  user_agent    String?   @db.Text
+  last_used_at  DateTime? @default(now()) @db.Timestamp(0)
+  created_at    DateTime  @default(now()) @db.Timestamp(0)
+  updated_at    DateTime? @default(now()) @db.Timestamp(0)
+  users         users     @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_tokens_users1")
 
-  @@index([access_key_status_id], map: "fk_access_keys_access_key_status1_idx")
   @@index([user_id], map: "fk_tokens_users1_idx")
 }
 
