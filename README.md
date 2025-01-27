@@ -42,10 +42,10 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 |     | Verbo HTTP | Endpoint URL   | Descrição                                                  |
 | --- | ---------- | -------------- | ---------------------------------------------------------- |
-| ❌  | POST       | /auth/login    | Realiza login e retorna um token JWT.                      |
-| ❌  | POST       | /auth/logout   | Encerra a sessão do usuário.                               |
-| ❌  | POST       | /auth/refresh  | Renova o token de autenticação.                            |
-| ❌  | POST       | /auth/validate | Valida o token e a origem da requisição (dispositivo, IP). |
+| ✅  | POST       | /auth/login    | Realiza login e retorna um token JWT.                      |
+| ✅  | POST       | /auth/logout   | Encerra a sessão do usuário.                               |
+| ✅  | POST       | /auth/refresh  | Renova o token de autenticação.                            |
+| ✅  | POST       | /auth/validate | Valida o token e a origem da requisição (dispositivo, IP). |
 
 ---
 
