@@ -14,7 +14,7 @@ import { FindUsersByAccountUseCase } from './usecases/find-users-by-account.usec
 
 import { TenantsService } from 'src/tenants/tenants.service';
 import { UsersService } from 'src/users/users.service';
-import { CreateAccountRequestDto } from './dto/create-account-request.dto';
+import { RequestCreateAccountDto } from './dto/request-create-account.dto';
 
 @Injectable()
 export class AccountsService {
@@ -30,8 +30,8 @@ export class AccountsService {
     private readonly usersService: UsersService,
   ) {}
 
-  async create(createAccountRequestDto: CreateAccountRequestDto) {
-    const { name, subdomain, email, phone } = createAccountRequestDto;
+  async create(createAccountRequestDto: RequestCreateAccountDto) {
+    const { name, subdomain, email, phone, password } = createAccountRequestDto;
 
     // Criando o tenant
     const dataTenant: CreateTenantDto = {
@@ -53,6 +53,7 @@ export class AccountsService {
       name: name,
       email: email,
       phone: phone,
+      password: password,
     };
     const users = await this.usersService.create(dataUser);
 
