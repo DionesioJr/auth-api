@@ -35,7 +35,6 @@ export class AccountsService {
 
     // Criando o tenant
     const dataTenant: CreateTenantDto = {
-      name: name,
       subdomain: subdomain,
     };
     const tenant = await this.tenantsService.create(dataTenant);

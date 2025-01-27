@@ -30,16 +30,6 @@ export class UpdateUserUseCase {
       }
     }
 
-    // Verificar se o telefone já existe
-    if (updateUserDto.phone && updateUserDto.phone !== existingUser.phone) {
-      const existingUserByPhone = await this.prisma.users.findUnique({
-        where: { phone: updateUserDto.phone },
-      });
-      if (existingUserByPhone) {
-        throw new ConflictException('Phone number already in use');
-      }
-    }
-
     // Se a senha foi fornecida, criptografar a nova senha
     const updatedData = { ...updateUserDto };
 
