@@ -6,10 +6,6 @@ export class ResponseTenantDto {
 
   @IsString()
   @MaxLength(255)
-  name?: string;
-
-  @IsString()
-  @MaxLength(255)
   subdomain: string;
 
   @IsBoolean()

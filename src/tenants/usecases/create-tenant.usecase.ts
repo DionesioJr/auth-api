@@ -29,7 +29,6 @@ export class CreateTenantUseCase {
     try {
       // Garantindo que nenhum campo obrigatório seja undefined
       const tenantData = {
-        name: createTenantDto.name,
         subdomain,
         is_active: createTenantDto.is_active ?? true,
         database_host: process.env.DATABASE_HOST ?? '',
