@@ -20,7 +20,7 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ## Áreas Funcionais
 
-- ❌ Autenticação
+- ✅ Autenticação
 - ✅ Gerenciamento de Tenants
 - ✅ Gerenciamento de Contas
 - ✅ Gerenciamento de Usuários
