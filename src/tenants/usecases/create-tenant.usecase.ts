@@ -4,6 +4,7 @@ import { CreateTenantDto } from '../dto/create-tenant.dto';
 import { ResponseTenantDto } from '../dto/response-tenant.dto';
 import { plainToInstance } from 'class-transformer';
 import * as dotenv from 'dotenv';
+import { ReservedSubdomains } from '../reserved-subdomains';
 
 dotenv.config();
 
@@ -15,6 +16,11 @@ export class CreateTenantUseCase {
 
   async execute(createTenantDto: CreateTenantDto): Promise<ResponseTenantDto> {
     const { subdomain } = createTenantDto;
+
+    //validando subdomínio na lista de subdomínios
+    if (ReservedSubdomains.includes(subdomain)) {
+      throw new ConflictException('Subdomain not authorized for use');
+    }
 
     this.logger.log(`Creating a new tenant with subdomain: ${subdomain}`);
 
