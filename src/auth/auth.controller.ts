@@ -1,8 +1,6 @@
 import { Controller, Post, Body, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { ValidateTokenDto } from './dto/validate-token.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -19,12 +17,12 @@ export class AuthController {
   }
 
   @Post('refresh')
-  refresh(@Body() refreshTokenDto: RefreshTokenDto, @Headers() headers: Record<string, string>) {
-    return this.authService.refresh(refreshTokenDto, headers);
+  refresh(@Headers() headers: Record<string, string>) {
+    return this.authService.refresh(headers);
   }
 
   @Post('validate')
-  validate(@Body() validateTokenDto: ValidateTokenDto) {
-    return this.authService.validate(validateTokenDto);
+  validate(@Headers() headers: Record<string, string>) {
+    return this.authService.validate(headers);
   }
 }

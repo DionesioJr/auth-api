@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/database/prisma.service';
-import { ValidateTokenDto } from '../dto/validate-token.dto';
 
 @Injectable()
 export class ValidateTokenUseCase {
@@ -10,12 +9,25 @@ export class ValidateTokenUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
-  async execute(validateTokenDto: ValidateTokenDto): Promise<{ valid: boolean }> {
+  async execute(headers): Promise<{ valid: boolean }> {
+    const refreshToken = this._extractToken(headers['authorization']);
+
+    if (!refreshToken) {
+      throw new UnauthorizedException('Token not found or inactive');
+    }
+
+    const { email } = this.jwtService.decode(refreshToken);
+
+    const user = await this.prisma.users.findUnique({ where: { email } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
     try {
-      this.jwtService.verify(validateTokenDto.token, { secret: process.env.JWT_SECRET });
+      this.jwtService.verify(refreshToken, { secret: process.env.JWT_SECRET });
 
       const existingKey = await this.prisma.users_access_keys.findFirst({
-        where: { access_token: validateTokenDto.token, is_active: 1 },
+        where: { refresh_token: refreshToken, is_active: 1 },
       });
 
       if (!existingKey) {
@@ -28,19 +40,29 @@ export class ValidateTokenUseCase {
       });
 
       if (
-        (validateTokenDto.ip_address && validateTokenDto.ip_address !== existingKey.ip_address) ||
-        (validateTokenDto.user_agent && validateTokenDto.user_agent !== existingKey.user_agent)
+        (headers.ip && headers.ip !== existingKey.ip_address) ||
+        (headers['user-agent'] && headers['user-agent'] !== existingKey.user_agent)
       ) {
         throw new UnauthorizedException('Token validation failed');
       }
 
       return { valid: true };
-    } catch (error: unknown) {
-      const err = error as Error;
-      throw new UnauthorizedException({
-        message: 'Invalid token',
-        cause: err.message, // Garante que `err` seja tratado como uma string válida
-      });
+    } catch (err) {
+      if (err.name === 'JsonWebTokenError') {
+        throw new UnauthorizedException('Invalid signature');
+      }
+      if (err.name === 'TokenExpiredError') {
+        throw new UnauthorizedException('Token expired');
+      }
+      throw new UnauthorizedException(err.name);
     }
+  }
+
+  private _extractToken(authHeader: string): string {
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      throw new UnauthorizedException('Invalid authorization header');
+    }
+
+    return authHeader.slice(7);
   }
 }
