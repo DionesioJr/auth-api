@@ -12,6 +12,10 @@ export class FindOneAccountUseCase {
   async execute(id: number): Promise<ResponseAccountDto> {
     this.logger.log(`Fetching account with ID: ${id}.`);
 
+    if (!id) {
+      throw new NotFoundException(`Account with ID ${id} not found.`);
+    }
+
     const account = await this.prisma.accounts.findUnique({ where: { id } });
 
     if (!account) {
