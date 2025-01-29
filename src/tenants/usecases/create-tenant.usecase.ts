@@ -46,13 +46,12 @@ export class CreateTenantUseCase {
 
       this.logger.log(`Tenant created successfully with subdomain: ${subdomain}`);
       return plainToInstance(ResponseTenantDto, tenant);
-    } catch (error) {
-      if (error instanceof ConflictException) {
-        this.logger.warn(error.message);
-        throw error;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.logger.error('Error occurred while creating tenant', error.stack);
+      } else {
+        this.logger.error(`Unexpected error: ${JSON.stringify(error)}`);
       }
-
-      this.logger.error('Error occurred while creating tenant', error.stack);
       throw new InternalServerErrorException('Failed to create tenant');
     }
   }

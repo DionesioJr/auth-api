@@ -3,6 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PrismaService } from 'src/database/prisma.service';
 import { GenerateTokensUseCase } from './generate-tokens.usecase';
+import { IPayload } from '../interfaces/payload.interface';
+import { ITokens } from '../interfaces/tokens.interface';
 
 dotenv.config();
 
@@ -16,10 +18,15 @@ export class RefreshTokenUseCase {
 
   private readonly logger = new Logger(RefreshTokenUseCase.name);
 
-  async execute(headers): Promise<{ access_token: string }> {
+  async execute(headers: Headers): Promise<ITokens> {
     this.logger.log('Refreshing token.');
 
-    const refreshToken = this._extractToken(headers['authorization']);
+    const authHeader = headers['authorization'] as string | undefined;
+    if (!authHeader) {
+      throw new UnauthorizedException('Authorization header is missing');
+    }
+
+    const refreshToken = this._extractToken(authHeader);
     if (!refreshToken) {
       throw new UnauthorizedException('Token not found or inactive');
     }
@@ -42,7 +49,15 @@ export class RefreshTokenUseCase {
       throw new UnauthorizedException('User not found');
     }
 
-    const tokens: any = this.generateTokensUseCase.execute(user, headers);
+    const payload: IPayload = {
+      sub: user.id,
+      email: user.email,
+      role: 'user',
+      ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
+      device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
+      user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
+    };
+    const tokens: ITokens = this.generateTokensUseCase.execute(payload);
 
     // Atualizar informações de uso do token
     await this.prisma.users_access_keys.update({
@@ -51,8 +66,8 @@ export class RefreshTokenUseCase {
         access_token: tokens.access_token,
         refresh_token: tokens.refresh_token,
         last_used_at: new Date(),
-        ip_address: headers.ip,
-        user_agent: headers['user-agent'],
+        ip_address: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
+        user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
       },
     });
 
@@ -61,7 +76,7 @@ export class RefreshTokenUseCase {
 
   private _extractToken(authHeader: string): string {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new Error('Invalid authorization header');
+      return '';
     }
 
     return authHeader.slice(7);

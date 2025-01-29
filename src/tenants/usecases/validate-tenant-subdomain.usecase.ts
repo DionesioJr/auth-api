@@ -27,8 +27,12 @@ export class ValidateTenantSubdomainUseCase {
       const isAvailable = !existingTenant;
       this.logger.log(`Subdomain '${subdomain}' is ${isAvailable ? 'available' : 'not available'}.`);
       return { isAvailable };
-    } catch (error) {
-      this.logger.error(`Error while validating subdomain: ${error.message}`, error.stack);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        this.logger.error(`Error while validating subdomain: ${error.message}`, error.stack);
+      } else {
+        this.logger.error(`Unexpected error: ${JSON.stringify(error)}`);
+      }
       throw new InternalServerErrorException('Error while validating subdomain');
     }
   }

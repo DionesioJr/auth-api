@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
+import { IPayload } from '../interfaces/payload.interface';
 
 dotenv.config();
 
@@ -8,16 +9,7 @@ dotenv.config();
 export class GenerateTokensUseCase {
   constructor(private readonly jwtService: JwtService) {}
 
-  execute(user, headers): { access_token: string; refresh_token: string } {
-    const payload = {
-      sub: user.id,
-      email: user.email,
-      role: {},
-      ip: headers.ip ?? '0.0.0.0',
-      device: headers['device-name'],
-      user_agent: headers['user-agent'],
-    };
-
+  execute(payload: IPayload): { access_token: string; refresh_token: string } {
     // Gerando o token de acesso
     const access_token = this.jwtService.sign(payload, {
       secret: process.env.JWT_SECRET,

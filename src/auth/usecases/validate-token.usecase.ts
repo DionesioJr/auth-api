@@ -1,4 +1,4 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -11,20 +11,28 @@ export class ValidateTokenUseCase {
 
   private readonly logger = new Logger(ValidateTokenUseCase.name);
 
-  async execute(headers): Promise<{ valid: boolean }> {
+  async execute(headers: Headers): Promise<{ valid: boolean }> {
     this.logger.log('Validating token.');
 
-    const accessToken = this._extractToken(headers['authorization']);
+    const authHeader = headers['authorization'] as string | undefined;
+    if (!authHeader) {
+      this.logger.log('Authorization header is missing');
+      return { valid: false };
+    }
+
+    const accessToken = this._extractToken(authHeader);
 
     if (!accessToken) {
-      throw new UnauthorizedException('Token not found or inactive');
+      this.logger.log('Token not found or inactive');
+      return { valid: false };
     }
 
     const { email } = this.jwtService.decode(accessToken);
 
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (!user) {
-      throw new UnauthorizedException('User not found');
+      this.logger.log('User not found');
+      return { valid: false };
     }
 
     try {
@@ -35,7 +43,8 @@ export class ValidateTokenUseCase {
       });
 
       if (!existingKey) {
-        throw new UnauthorizedException('Token not found or inactive');
+        this.logger.log('Token not found or inactive');
+        return { valid: false };
       }
 
       await this.prisma.users_access_keys.update({
@@ -44,27 +53,25 @@ export class ValidateTokenUseCase {
       });
 
       if (
-        (headers.ip && headers.ip !== existingKey.ip_address) ||
+        (headers['id'] && headers['id'] !== existingKey.ip_address) ||
         (headers['user-agent'] && headers['user-agent'] !== existingKey.user_agent)
       ) {
-        throw new UnauthorizedException('Token validation failed');
+        this.logger.log('Token validation failed');
+        return { valid: false };
       }
 
       return { valid: true };
     } catch (err) {
-      if (err.name === 'JsonWebTokenError') {
-        throw new UnauthorizedException('Invalid signature');
+      if (err === 'JsonWebTokenError') {
+        this.logger.log('Invalid signature');
+        return { valid: false };
       }
-      if (err.name === 'TokenExpiredError') {
-        throw new UnauthorizedException('Token expired');
-      }
-      throw new UnauthorizedException(err.name);
     }
   }
 
   private _extractToken(authHeader: string): string {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new UnauthorizedException('Invalid authorization header');
+      return '';
     }
 
     return authHeader.slice(7);

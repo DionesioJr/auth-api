@@ -6,9 +6,14 @@ export class LogoutUseCase {
   constructor(private readonly prisma: PrismaService) {}
 
   private readonly logger = new Logger(LogoutUseCase.name);
-  async execute(headers): Promise<void> {
+  async execute(headers: Headers): Promise<void> {
     this.logger.log('User is logging out');
-    const accessToken = this._extractToken(headers['authorization']);
+    const authHeader = headers['authorization'] as string | undefined;
+    if (!authHeader) {
+      throw new UnauthorizedException('Authorization header is missing');
+    }
+
+    const accessToken = this._extractToken(authHeader);
     if (!accessToken) {
       throw new UnauthorizedException('Token not found or inactive');
     }
@@ -27,7 +32,7 @@ export class LogoutUseCase {
 
   private _extractToken(authHeader: string): string {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      throw new Error('Invalid authorization header');
+      return '';
     }
 
     return authHeader.slice(7);

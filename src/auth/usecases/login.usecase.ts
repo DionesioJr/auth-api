@@ -1,11 +1,12 @@
-import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
 
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
+import { PrismaService } from 'src/database/prisma.service';
 import { LoginDto } from '../dto/login.dto';
 import { GenerateTokensUseCase } from './generate-tokens.usecase';
+import { IPayload } from '../interfaces/payload.interface';
+import { ITokens } from '../interfaces/tokens.interface';
 
 dotenv.config();
 
@@ -18,7 +19,7 @@ export class LoginUseCase {
 
   private readonly logger = new Logger(GenerateTokensUseCase.name);
 
-  async execute(loginDto: LoginDto, headers): Promise<{ access_token: string; refresh_token: string }> {
+  async execute(loginDto: LoginDto, headers: Headers): Promise<ITokens> {
     this.logger.log(`Logging in user with email: ${loginDto.email}`);
 
     const user = await this.prisma.users.findUnique({ where: { email: loginDto.email } });
@@ -27,7 +28,15 @@ export class LoginUseCase {
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const tokens: any = this.generateTokensUseCase.execute(user, headers);
+    const payload: IPayload = {
+      sub: user.id,
+      email: user.email,
+      role: 'user',
+      ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
+      device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
+      user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
+    };
+    const tokens: ITokens = this.generateTokensUseCase.execute(payload);
 
     // Salvando as chaves de acesso no banco de dados
     const data_create_access = {
@@ -35,9 +44,9 @@ export class LoginUseCase {
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
       is_active: 1,
-      device_name: headers['device-name'],
-      ip_address: headers.ip,
-      user_agent: headers['user-agent'],
+      device_name: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
+      ip_address: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
+      user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
     };
     await this.prisma.users_access_keys.create({
       data: data_create_access,
