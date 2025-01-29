@@ -173,5 +173,5 @@ export const ReservedSubdomains = [
   'captcha',
   'csr',
   'ssl',
-  'tls'
+  'tls',
 ];
