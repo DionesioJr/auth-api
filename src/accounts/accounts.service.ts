@@ -15,10 +15,13 @@ import { FindUsersByAccountUseCase } from './usecases/find-users-by-account.usec
 import { TenantsService } from 'src/tenants/tenants.service';
 import { UsersService } from 'src/users/users.service';
 import { RequestCreateAccountDto } from './dto/request-create-account.dto';
+import { PrismaService } from 'src/database/prisma.service';
 
 @Injectable()
 export class AccountsService {
   constructor(
+    private readonly prisma: PrismaService,
+
     private readonly createAccountUseCase: CreateAccountUseCase,
     private readonly findAllAccountsUseCase: FindAllAccountsUseCase,
     private readonly findOneAccountUseCase: FindOneAccountUseCase,
@@ -39,7 +42,7 @@ export class AccountsService {
     };
     const tenant = await this.tenantsService.create(dataTenant);
 
-    // Criando o usuário associado à conta
+    // Criando a conta
     const dataAccount: CreateAccountDto = {
       name: name,
       email: email,
@@ -48,7 +51,7 @@ export class AccountsService {
     };
     const account = await this.createAccountUseCase.execute(dataAccount);
 
-    // Criando o usuário associado à conta
+    // Criando o usuário
     const dataUser: CreateUserDto = {
       name: name,
       email: email,
@@ -56,6 +59,15 @@ export class AccountsService {
       password: password,
     };
     const users = await this.usersService.create(dataUser);
+
+    // associando usuario a conta
+    await this.prisma.accounts_users.create({
+      data: {
+        account_id: account.id,
+        user_id: users.id,
+        is_owner: 1, // por padrão, o primeiro usuário da conta é o owner
+      },
+    });
 
     return { account, users, tenant };
   }

@@ -44,6 +44,9 @@ export class RefreshTokenUseCase {
     });
 
     const { email } = this.jwtService.decode(refreshToken);
+    if (!email) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (!user) {
       throw new UnauthorizedException('User not found');
