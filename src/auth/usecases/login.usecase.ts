@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -16,7 +16,11 @@ export class LoginUseCase {
     private readonly generateTokensUseCase: GenerateTokensUseCase,
   ) {}
 
+  private readonly logger = new Logger(GenerateTokensUseCase.name);
+
   async execute(loginDto: LoginDto, headers): Promise<{ access_token: string; refresh_token: string }> {
+    this.logger.log(`Logging in user with email: ${loginDto.email}`);
+
     const user = await this.prisma.users.findUnique({ where: { email: loginDto.email } });
 
     if (!user || !(await bcrypt.compare(loginDto.password, user.password || ''))) {

@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PrismaService } from 'src/database/prisma.service';
@@ -14,7 +14,11 @@ export class RefreshTokenUseCase {
     private readonly generateTokensUseCase: GenerateTokensUseCase,
   ) {}
 
+  private readonly logger = new Logger(RefreshTokenUseCase.name);
+
   async execute(headers): Promise<{ access_token: string }> {
+    this.logger.log('Refreshing token.');
+
     const refreshToken = this._extractToken(headers['authorization']);
     if (!refreshToken) {
       throw new UnauthorizedException('Token not found or inactive');
@@ -44,6 +48,8 @@ export class RefreshTokenUseCase {
     await this.prisma.users_access_keys.update({
       where: { id: existingKey.id },
       data: {
+        access_token: tokens.access_token,
+        refresh_token: tokens.refresh_token,
         last_used_at: new Date(),
         ip_address: headers.ip,
         user_agent: headers['user-agent'],

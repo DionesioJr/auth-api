@@ -13,8 +13,9 @@ export class GenerateTokensUseCase {
       sub: user.id,
       email: user.email,
       role: {},
+      ip: headers.ip ?? '0.0.0.0',
       device: headers['device-name'],
-      ip: headers.ip,
+      user_agent: headers['user-agent'],
     };
 
     // Gerando o token de acesso

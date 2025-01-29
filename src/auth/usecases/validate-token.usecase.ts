@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/database/prisma.service';
 
@@ -9,7 +9,11 @@ export class ValidateTokenUseCase {
     private readonly prisma: PrismaService,
   ) {}
 
+  private readonly logger = new Logger(ValidateTokenUseCase.name);
+
   async execute(headers): Promise<{ valid: boolean }> {
+    this.logger.log('Validating token.');
+
     const accessToken = this._extractToken(headers['authorization']);
 
     if (!accessToken) {
