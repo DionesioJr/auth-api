@@ -18,8 +18,8 @@ export class AuthService {
     return this.loginUseCase.execute(loginDto, headers);
   }
 
-  async logout(userId: number) {
-    return this.logoutUseCase.execute(userId);
+  async logout(headers: Record<string, string>) {
+    return this.logoutUseCase.execute(headers);
   }
 
   async refresh(headers: Record<string, string>) {

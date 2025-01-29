@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PrismaService } from 'src/database/prisma.service';
+import { GenerateTokensUseCase } from './generate-tokens.usecase';
 
 dotenv.config();
 
@@ -10,30 +11,34 @@ export class RefreshTokenUseCase {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly generateTokensUseCase: GenerateTokensUseCase,
   ) {}
 
   async execute(headers): Promise<{ access_token: string }> {
-    const refresh_token = this._extractToken(headers['authorization']);
+    const refreshToken = this._extractToken(headers['authorization']);
+    if (!refreshToken) {
+      throw new UnauthorizedException('Token not found or inactive');
+    }
 
     const existingKey = await this.prisma.users_access_keys.findFirst({
-      where: { refresh_token: refresh_token, is_active: 1 },
+      where: { refresh_token: refreshToken, is_active: 1 },
     });
-
     if (!existingKey) {
       throw new UnauthorizedException('Invalid or inactive refresh token');
     }
 
     // Verificar e tipar o payload
-    const payload = this.jwtService.verify(refresh_token, {
+    this.jwtService.verify(refreshToken, {
       secret: process.env.JWT_REFRESH_SECRET,
     });
-    console.log(payload);
 
-    // Gerar novo access token
-    const new_access_token = this.jwtService.sign(payload, {
-      secret: process.env.JWT_SECRET,
-      // expiresIn: '1h',
-    });
+    const { email } = this.jwtService.decode(refreshToken);
+    const user = await this.prisma.users.findUnique({ where: { email } });
+    if (!user) {
+      throw new UnauthorizedException('User not found');
+    }
+
+    const tokens: any = this.generateTokensUseCase.execute(user, headers);
 
     // Atualizar informações de uso do token
     await this.prisma.users_access_keys.update({
@@ -45,7 +50,7 @@ export class RefreshTokenUseCase {
       },
     });
 
-    return { access_token: new_access_token };
+    return tokens;
   }
 
   private _extractToken(authHeader: string): string {

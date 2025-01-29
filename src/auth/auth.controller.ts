@@ -12,8 +12,8 @@ export class AuthController {
   }
 
   @Post('logout')
-  logout(@Body('userId') userId: number) {
-    return this.authService.logout(userId);
+  logout(@Headers() headers: Record<string, string>) {
+    return this.authService.logout(headers);
   }
 
   @Post('refresh')

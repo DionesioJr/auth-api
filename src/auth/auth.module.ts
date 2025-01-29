@@ -8,6 +8,7 @@ import { LogoutUseCase } from './usecases/logout.usecase';
 import { RefreshTokenUseCase } from './usecases/refresh-token.usecase';
 import { ValidateTokenUseCase } from './usecases/validate-token.usecase';
 import { UsersModule } from 'src/users/users.module';
+import { GenerateTokensUseCase } from './usecases/generate-tokens.usecase';
 
 @Module({
   imports: [
@@ -19,7 +20,15 @@ import { UsersModule } from 'src/users/users.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [PrismaService, AuthService, LoginUseCase, LogoutUseCase, RefreshTokenUseCase, ValidateTokenUseCase],
+  providers: [
+    PrismaService,
+    AuthService,
+    LoginUseCase,
+    LogoutUseCase,
+    RefreshTokenUseCase,
+    ValidateTokenUseCase,
+    GenerateTokensUseCase,
+  ],
   exports: [AuthService],
 })
 export class AuthModule {}
