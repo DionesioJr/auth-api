@@ -1,0 +1,32 @@
+{
+    "root": true,
+    "env": {
+      "node": true,
+      "es2021": true,
+      "jest": true
+    },
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "sourceType": "module"
+    },
+    "ignorePatterns": ["dist/", "node_modules/"],
+    "plugins": ["@typescript-eslint", "prettier"],
+    "rules": {
+      "@typescript-eslint/no-explicit-any": "off", // ✅ Permite `any` para desenvolvimento rápido
+      "@typescript-eslint/explicit-module-boundary-types": "off", // ✅ Não obriga definir tipos de retorno em funções
+      "@typescript-eslint/no-unused-vars": ["warn", { "argsIgnorePattern": "^_" }], // ⚠️ Apenas avisa sobre variáveis não usadas
+      "@typescript-eslint/no-floating-promises": "warn", // ⚠️ Evita esquecer `await`, mas não impede execução
+      "@typescript-eslint/no-unsafe-argument": "warn", // ⚠️ Apenas avisa sobre argumentos inseguros
+      "@typescript-eslint/no-unsafe-assignment": "warn", // ⚠️ Apenas avisa sobre atribuições inseguras
+      "prettier/prettier": ["error", { "endOfLine": "auto" }], // ✅ Mantém Prettier alinhado ao ESLint
+      "no-console": "warn", // ⚠️ Permite `console.log`, mas avisa para evitar excessos
+      "prefer-const": "warn" // ⚠️ Sugere `const` ao invés de `let` sempre que possível
+    }
+  }
+  
