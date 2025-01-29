@@ -6,7 +6,7 @@ import { PrismaService } from 'src/database/prisma.service';
 export class ValidateTokenUseCase {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly prisma: PrismaService,
+    private readonly prisma: PrismaService
   ) {}
 
   private readonly logger = new Logger(ValidateTokenUseCase.name);
@@ -14,21 +14,27 @@ export class ValidateTokenUseCase {
   async execute(headers: Headers): Promise<{ valid: boolean }> {
     this.logger.log('Validating token.');
 
-    const authHeader = headers['authorization'] as string | undefined;
+    // Acessar headers corretamente
+    const authHeader = headers['authorization'];
     if (!authHeader) {
       this.logger.log('Authorization header is missing');
       return { valid: false };
     }
 
     const accessToken = this._extractToken(authHeader);
-
     if (!accessToken) {
       this.logger.log('Token not found or inactive');
       return { valid: false };
     }
 
-    const { email } = this.jwtService.decode(accessToken);
+    // Tipagem correta do decode()
+    const decodedToken = this.jwtService.decode(accessToken);
+    if (!decodedToken || !decodedToken.email) {
+      this.logger.log('Invalid token payload');
+      return { valid: false };
+    }
 
+    const { email } = decodedToken;
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (!user) {
       this.logger.log('User not found');
@@ -54,18 +60,27 @@ export class ValidateTokenUseCase {
 
       if (
         (headers['id'] && headers['id'] !== existingKey.ip_address) ||
-        (headers['user-agent'] && headers['user-agent'] !== existingKey.user_agent)
+        (headers['user-gent'] && headers['user-gent'] !== existingKey.user_agent)
       ) {
         this.logger.log('Token validation failed');
         return { valid: false };
       }
 
       return { valid: true };
-    } catch (err) {
-      if (err === 'JsonWebTokenError') {
-        this.logger.log('Invalid signature');
-        return { valid: false };
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        if (err.name === 'JsonWebTokenError') {
+          this.logger.log('Invalid signature');
+          return { valid: false };
+        }
+        if (err.name === 'TokenExpiredError') {
+          this.logger.log('Token expired');
+          return { valid: false };
+        }
+        this.logger.error(`Unexpected error: ${err.message}`);
       }
+
+      return { valid: false }; // ✅ Agora sempre retorna um valor
     }
   }
 
@@ -73,7 +88,6 @@ export class ValidateTokenUseCase {
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return '';
     }
-
     return authHeader.slice(7);
   }
 }

@@ -14,7 +14,7 @@ dotenv.config();
 export class LoginUseCase {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly generateTokensUseCase: GenerateTokensUseCase,
+    private readonly generateTokensUseCase: GenerateTokensUseCase
   ) {}
 
   private readonly logger = new Logger(GenerateTokensUseCase.name);

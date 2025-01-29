@@ -18,7 +18,7 @@ export class TenantsService {
     private readonly updateTenantUseCase: UpdateTenantUseCase,
     private readonly removeTenantUseCase: RemoveTenantUseCase,
     private readonly findAccountsByTenantIdUseCase: FindAccountsByTenantIdUseCase,
-    private readonly validateTenantSubdomainUseCase: ValidateTenantSubdomainUseCase,
+    private readonly validateTenantSubdomainUseCase: ValidateTenantSubdomainUseCase
   ) {}
 
   async create(createTenantDto: CreateTenantDto) {

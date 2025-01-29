@@ -11,22 +11,22 @@ export class AuthService {
     private readonly loginUseCase: LoginUseCase,
     private readonly logoutUseCase: LogoutUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
-    private readonly validateTokenUseCase: ValidateTokenUseCase,
+    private readonly validateTokenUseCase: ValidateTokenUseCase
   ) {}
 
-  async login(loginDto: LoginDto, headers: Record<string, string>) {
+  async login(loginDto: LoginDto, headers: Headers) {
     return this.loginUseCase.execute(loginDto, headers);
   }
 
-  async logout(headers: Record<string, string>) {
+  async logout(headers: Headers) {
     return this.logoutUseCase.execute(headers);
   }
 
-  async refresh(headers: Record<string, string>) {
+  async refresh(headers: Headers) {
     return this.refreshTokenUseCase.execute(headers);
   }
 
-  async validate(headers: Record<string, string>) {
+  async validate(headers: Headers) {
     return this.validateTokenUseCase.execute(headers);
   }
 }

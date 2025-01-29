@@ -27,7 +27,7 @@ export class AccountsService {
     private readonly findUsersByAccountUseCase: FindUsersByAccountUseCase,
 
     private readonly tenantsService: TenantsService,
-    private readonly usersService: UsersService,
+    private readonly usersService: UsersService
   ) {}
 
   async create(createAccountRequestDto: RequestCreateAccountDto) {

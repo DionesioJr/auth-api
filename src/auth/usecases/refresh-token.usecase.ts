@@ -13,7 +13,7 @@ export class RefreshTokenUseCase {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-    private readonly generateTokensUseCase: GenerateTokensUseCase,
+    private readonly generateTokensUseCase: GenerateTokensUseCase
   ) {}
 
   private readonly logger = new Logger(RefreshTokenUseCase.name);

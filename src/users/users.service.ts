@@ -15,7 +15,7 @@ export class UsersService {
     private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
-    private readonly removeUserUseCase: RemoveUserUseCase,
+    private readonly removeUserUseCase: RemoveUserUseCase
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<ResponseUserDto> {

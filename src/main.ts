@@ -1,12 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from 'dotenv';
 
 async function bootstrap() {
   // Carregar o arquivo .env
   config();
+
+  const logger = new Logger(bootstrap.name);
 
   const app = await NestFactory.create(AppModule);
 
@@ -16,7 +18,7 @@ async function bootstrap() {
       transform: true,
       whitelist: true,
       forbidNonWhitelisted: true,
-    }),
+    })
   );
 
   // Configurar Swagger
@@ -31,7 +33,7 @@ async function bootstrap() {
 
   // Usar a porta definida no .env ou a porta padrão 8000
   const port = process.env.APP_PORT || 3000;
-  console.log(`Server running on port ${port}`);
+  logger.log(`Server running on port ${port}`);
   await app.listen(port);
 }
 

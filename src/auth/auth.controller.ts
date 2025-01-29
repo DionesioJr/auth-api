@@ -7,22 +7,22 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
-  login(@Body() loginDto: LoginDto, @Headers() headers: Record<string, string>) {
+  login(@Body() loginDto: LoginDto, @Headers() headers: Headers) {
     return this.authService.login(loginDto, headers);
   }
 
   @Post('logout')
-  logout(@Headers() headers: Record<string, string>) {
+  logout(@Headers() headers: Headers) {
     return this.authService.logout(headers);
   }
 
   @Post('refresh')
-  refresh(@Headers() headers: Record<string, string>) {
+  refresh(@Headers() headers: Headers) {
     return this.authService.refresh(headers);
   }
 
   @Post('validate')
-  validate(@Headers() headers: Record<string, string>) {
+  validate(@Headers() headers: Headers) {
     return this.authService.validate(headers);
   }
 }

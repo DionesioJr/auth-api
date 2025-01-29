@@ -12,7 +12,7 @@ dotenv.config();
 export class CreateTenantUseCase {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly validateTenantSubdomainUseCase: ValidateTenantSubdomainUseCase,
+    private readonly validateTenantSubdomainUseCase: ValidateTenantSubdomainUseCase
   ) {}
 
   private readonly logger = new Logger(CreateTenantUseCase.name);
