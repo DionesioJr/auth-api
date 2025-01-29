@@ -10,13 +10,13 @@ export class ValidateTokenUseCase {
   ) {}
 
   async execute(headers): Promise<{ valid: boolean }> {
-    const refreshToken = this._extractToken(headers['authorization']);
+    const accessToken = this._extractToken(headers['authorization']);
 
-    if (!refreshToken) {
+    if (!accessToken) {
       throw new UnauthorizedException('Token not found or inactive');
     }
 
-    const { email } = this.jwtService.decode(refreshToken);
+    const { email } = this.jwtService.decode(accessToken);
 
     const user = await this.prisma.users.findUnique({ where: { email } });
     if (!user) {
@@ -24,10 +24,10 @@ export class ValidateTokenUseCase {
     }
 
     try {
-      this.jwtService.verify(refreshToken, { secret: process.env.JWT_SECRET });
+      this.jwtService.verify(accessToken, { secret: process.env.JWT_SECRET });
 
       const existingKey = await this.prisma.users_access_keys.findFirst({
-        where: { refresh_token: refreshToken, is_active: 1 },
+        where: { access_token: accessToken, is_active: 1 },
       });
 
       if (!existingKey) {
