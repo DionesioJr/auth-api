@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from 'dotenv';
+import { ResponseInterceptor } from './utils/response.interceptor';
 
 async function bootstrap() {
   // Carregar o arquivo .env
@@ -11,6 +12,9 @@ async function bootstrap() {
   const logger = new Logger(bootstrap.name);
 
   const app = await NestFactory.create(AppModule);
+
+  // Aplica o interceptor globalmente
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
   // Habilitar transformação e validação global
   app.useGlobalPipes(
