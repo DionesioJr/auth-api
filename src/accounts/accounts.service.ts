@@ -31,7 +31,9 @@ export class AccountsService {
     private readonly usersService: UsersService
   ) {}
 
-  async create(createAccountRequestDto: RequestCreateAccountDto): Promise<{ account: any; users: any; tenant: any }> {
+  async create(
+    createAccountRequestDto: RequestCreateAccountDto
+  ): Promise<{ user_id: number; name: string; subdomain: string; email: string; phone?: string }> {
     const { name, subdomain, email, phone, password } = createAccountRequestDto;
 
     // Criar o tenant
@@ -62,7 +64,7 @@ export class AccountsService {
       },
     });
 
-    return { account, users, tenant };
+    return { user_id: users.id, name, subdomain, email, phone };
   }
 
   async findAll(): Promise<any> {
