@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as dotenv from 'dotenv';
 import { PrismaService } from 'src/database/prisma.service';
 import { GenerateTokensUseCase } from './generate-tokens.usecase';
+import { FindTenantByUserIdUseCase } from 'src/tenants/usecases/find-tenant-by-user-id.usecase';
 import { IPayload } from '../interfaces/payload.interface';
 import { ITokens } from '../interfaces/tokens.interface';
 
@@ -13,7 +14,8 @@ export class RefreshTokenUseCase {
   constructor(
     private readonly prisma: PrismaService,
     private readonly jwtService: JwtService,
-    private readonly generateTokensUseCase: GenerateTokensUseCase
+    private readonly generateTokensUseCase: GenerateTokensUseCase,
+    private readonly findTenantByUserIdUseCase: FindTenantByUserIdUseCase
   ) {}
 
   private readonly logger = new Logger(RefreshTokenUseCase.name);
@@ -52,10 +54,13 @@ export class RefreshTokenUseCase {
       throw new UnauthorizedException('User not found');
     }
 
+    const tenant = await this.findTenantByUserIdUseCase.execute(user.id);
+    const subdomains = tenant.map((t) => t.subdomain);
+
     const payload: IPayload = {
       sub: user.id,
       email: user.email,
-      role: 'user',
+      subdomain: subdomains,
       ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
       device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
       user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',

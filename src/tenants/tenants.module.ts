@@ -9,6 +9,7 @@ import { UpdateTenantUseCase } from './usecases/update-tenant.usecase';
 import { RemoveTenantUseCase } from './usecases/remove-tenant.usecase';
 import { FindAccountsByTenantIdUseCase } from './usecases/find-accounts-by-tenant-id.usecase';
 import { ValidateTenantSubdomainUseCase } from './usecases/validate-tenant-subdomain.usecase';
+import { FindTenantByUserIdUseCase } from './usecases/find-tenant-by-user-id.usecase';
 
 @Module({
   controllers: [TenantsController],
@@ -22,7 +23,8 @@ import { ValidateTenantSubdomainUseCase } from './usecases/validate-tenant-subdo
     RemoveTenantUseCase,
     FindAccountsByTenantIdUseCase,
     ValidateTenantSubdomainUseCase,
+    FindTenantByUserIdUseCase,
   ],
-  exports: [TenantsService],
+  exports: [TenantsService, FindTenantByUserIdUseCase],
 })
 export class TenantsModule {}

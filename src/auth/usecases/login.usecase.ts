@@ -7,6 +7,7 @@ import { LoginDto } from '../dto/login.dto';
 import { GenerateTokensUseCase } from './generate-tokens.usecase';
 import { IPayload } from '../interfaces/payload.interface';
 import { ITokens } from '../interfaces/tokens.interface';
+import { FindTenantByUserIdUseCase } from 'src/tenants/usecases/find-tenant-by-user-id.usecase';
 
 dotenv.config();
 
@@ -14,7 +15,8 @@ dotenv.config();
 export class LoginUseCase {
   constructor(
     private readonly prisma: PrismaService,
-    private readonly generateTokensUseCase: GenerateTokensUseCase
+    private readonly generateTokensUseCase: GenerateTokensUseCase,
+    private readonly findTenantByUserIdUseCase: FindTenantByUserIdUseCase
   ) {}
 
   private readonly logger = new Logger(GenerateTokensUseCase.name);
@@ -28,10 +30,13 @@ export class LoginUseCase {
       throw new UnauthorizedException('Invalid email or password');
     }
 
+    const tenant = await this.findTenantByUserIdUseCase.execute(user.id);
+    const subdomains = tenant.map((t) => t.subdomain);
+
     const payload: IPayload = {
       sub: user.id,
+      subdomain: subdomains,
       email: user.email,
-      role: 'user',
       ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
       device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
       user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
