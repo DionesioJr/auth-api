@@ -31,8 +31,9 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 |     | Verbo HTTP | Endpoint URL   | Descrição                                                  |
 | --- | ---------- | -------------- | ---------------------------------------------------------- |
-| ✅  | POST       | /auth/login    | Realiza login e retorna um token JWT.                      |
-| ✅  | POST       | /auth/logout   | Encerra a sessão do usuário.                               |
+| ✅  | POST       | /auth/signin   | Realiza login e retorna um token JWT.                      |
+| ✅  | POST       | /auth/signout  | Encerra a sessão do usuário.                               |
+| ✅  | POST       | /auth/signup   | Cria novo usuário e retorna um token JWT.                  |
 | ✅  | POST       | /auth/refresh  | Renova o token de autenticação.                            |
 | ✅  | POST       | /auth/validate | Valida o token e a origem da requisição (dispositivo, IP). |
 
@@ -67,10 +68,11 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ### **Gerenciamento de Usuários**
 
-|     | Verbo HTTP | Endpoint URL | Descrição                            |
-| --- | ---------- | ------------ | ------------------------------------ |
-| ✅  | GET        | /users       | Lista todos os usuários.             |
-| ✅  | GET        | /users/:id   | Detalha um usuário específico.       |
-| ✅  | POST       | /users       | Cria um novo usuário.                |
-| ✅  | PUT        | /users/:id   | Atualizar informações de um usuário. |
-| ✅  | DELETE     | /users/:id   | Remove um usuário.                   |
+|     | Verbo HTTP | Endpoint URL        | Descrição                                 |
+| --- | ---------- | ------------------- | ----------------------------------------- |
+| ✅  | GET        | /users              | Lista todos os usuários.                  |
+| ✅  | GET        | /users/:id          | Detalha um usuário específico.            |
+| ✅  | GET        | /users/email/:email | Detalha um usuário específico, por email. |
+| ✅  | POST       | /users              | Cria um novo usuário.                     |
+| ✅  | PUT        | /users/:id          | Atualizar informações de um usuário.      |
+| ✅  | DELETE     | /users/:id          | Remove um usuário.                        |
