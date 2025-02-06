@@ -9,10 +9,12 @@ import { RefreshTokenUseCase } from './usecases/refresh-token.usecase';
 import { ValidateTokenUseCase } from './usecases/validate-token.usecase';
 import { UsersModule } from 'src/users/users.module';
 import { GenerateTokensUseCase } from './usecases/generate-tokens.usecase';
+import { AccountsModule } from 'src/accounts/accounts.module';
 
 @Module({
   imports: [
     UsersModule,
+    AccountsModule,
     JwtModule.register({
       global: true,
       secret: process.env.JWT_SECRET,
