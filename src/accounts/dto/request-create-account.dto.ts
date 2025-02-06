@@ -23,5 +23,5 @@ export class RequestCreateAccountDto {
 
   @IsOptional()
   @IsString()
-  password?: string;
+  password: string;
 }

@@ -24,5 +24,6 @@ import { UsersModule } from 'src/users/users.module';
     RemoveAccountUseCase,
     FindUsersByAccountUseCase,
   ],
+  exports: [AccountsService],
 })
 export class AccountsModule {}

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 
 // DTOs
@@ -12,6 +12,7 @@ import { FindOneAccountUseCase } from './usecases/find-one-account.usecase';
 import { UpdateAccountUseCase } from './usecases/update-account.usecase';
 import { RemoveAccountUseCase } from './usecases/remove-account.usecase';
 import { FindUsersByAccountUseCase } from './usecases/find-users-by-account.usecase';
+import { FindUserByEmailUseCase } from 'src/users/usecases/find-user-by-email.usecase';
 
 // Services
 import { TenantsService } from 'src/tenants/tenants.service';
@@ -31,10 +32,31 @@ export class AccountsService {
     private readonly usersService: UsersService
   ) {}
 
-  async create(
-    createAccountRequestDto: RequestCreateAccountDto
-  ): Promise<{ user_id: number; name: string; subdomain: string; email: string; phone?: string }> {
+  async create(createAccountRequestDto: RequestCreateAccountDto): Promise<{
+    user_id: number;
+    name: string;
+    subdomain: string;
+    email: string;
+    phone?: string;
+    password: string;
+  }> {
     const { name, subdomain, email, phone, password } = createAccountRequestDto;
+
+    // Verifica se o e-mail já está em uso
+    let emailExists;
+    try {
+      emailExists = await this.usersService.findOneByEmail(email);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        emailExists = null;
+      } else {
+        throw new InternalServerErrorException('Error validating email.');
+      }
+    }
+
+    if (emailExists) {
+      throw new ConflictException(`Email ${email} is already in use.`);
+    }
 
     // Criar o tenant
     const tenant = await this.tenantsService.create({ subdomain });
@@ -64,7 +86,7 @@ export class AccountsService {
       },
     });
 
-    return { user_id: users.id, name, subdomain, email, phone };
+    return { user_id: users.id, name, subdomain, email, phone, password };
   }
 
   async findAll(): Promise<any> {
