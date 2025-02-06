@@ -9,6 +9,7 @@ import { FindAllUsersUseCase } from './usecases/find-all-users.usecase';
 import { FindOneUserUseCase } from './usecases/find-one-user.usecase';
 import { UpdateUserUseCase } from './usecases/update-user.usecase';
 import { RemoveUserUseCase } from './usecases/remove-user.usecase';
+import { FindUserByEmailUseCase } from './usecases/find-user-by-email.usecase';
 
 @Module({
   controllers: [UsersController],
@@ -20,6 +21,7 @@ import { RemoveUserUseCase } from './usecases/remove-user.usecase';
     FindOneUserUseCase,
     UpdateUserUseCase,
     RemoveUserUseCase,
+    FindUserByEmailUseCase,
   ],
   exports: [UsersService],
 })

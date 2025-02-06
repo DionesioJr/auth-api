@@ -7,6 +7,7 @@ import { FindOneUserUseCase } from './usecases/find-one-user.usecase';
 import { UpdateUserUseCase } from './usecases/update-user.usecase';
 import { RemoveUserUseCase } from './usecases/remove-user.usecase';
 import { ResponseUserDto } from './dto/response-user.dto';
+import { FindUserByEmailUseCase } from './usecases/find-user-by-email.usecase';
 
 @Injectable()
 export class UsersService {
@@ -15,7 +16,8 @@ export class UsersService {
     private readonly findAllUsersUseCase: FindAllUsersUseCase,
     private readonly findOneUserUseCase: FindOneUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
-    private readonly removeUserUseCase: RemoveUserUseCase
+    private readonly removeUserUseCase: RemoveUserUseCase,
+    private readonly findUserByEmailUseCase: FindUserByEmailUseCase
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
@@ -28,6 +30,10 @@ export class UsersService {
 
   async findOne(id: number): Promise<ResponseUserDto> {
     return this.findOneUserUseCase.execute(id);
+  }
+
+  async findOneByEmail(email: string): Promise<ResponseUserDto> {
+    return this.findUserByEmailUseCase.execute(email);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
