@@ -1,35 +1,28 @@
-import { Injectable, Logger, ConflictException, InternalServerErrorException } from '@nestjs/common';
+import { Injectable, Logger, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service';
 import { CreateTenantDto } from '../dto/create-tenant.dto';
 import { ResponseTenantDto } from '../dto/response-tenant.dto';
 import { plainToInstance } from 'class-transformer';
 import * as dotenv from 'dotenv';
-import { ValidateTenantSubdomainUseCase } from './validate-tenant-subdomain.usecase';
 
 dotenv.config();
 
 @Injectable()
 export class CreateTenantUseCase {
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly validateTenantSubdomainUseCase: ValidateTenantSubdomainUseCase
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   private readonly logger = new Logger(CreateTenantUseCase.name);
 
   async execute(createTenantDto: CreateTenantDto): Promise<ResponseTenantDto> {
     const { subdomain } = createTenantDto;
-    this.logger.log(`Creating a new tenant with subdomain: ${subdomain}`);
 
-    // Validar subdomínio usando o caso de uso específico
-    const { isAvailable } = await this.validateTenantSubdomainUseCase.execute(subdomain);
-    if (!isAvailable) {
-      throw new ConflictException('Subdomain already in use');
-    }
+    const subdomainValid = subdomain ?? generateWords();
+
+    this.logger.log(`Creating a new tenant with subdomain: ${subdomain}`);
 
     // Garantindo que nenhum campo obrigatório seja undefined
     const tenantData = {
-      subdomain,
+      subdomain: subdomainValid,
       is_active: createTenantDto.is_active ?? true,
       database_host: process.env.DATABASE_HOST ?? '',
       database_port: parseInt(process.env.DATABASE_PORT ?? '', 10),

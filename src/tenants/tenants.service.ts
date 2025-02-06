@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { ConflictException, Injectable } from '@nestjs/common';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
 import { CreateTenantUseCase } from './usecases/create-tenant.usecase';
@@ -22,6 +22,11 @@ export class TenantsService {
   ) {}
 
   async create(createTenantDto: CreateTenantDto) {
+    // Validar subdomínio usando o caso de uso específico
+    const { isAvailable } = await this.validateTenantSubdomainUseCase.execute(createTenantDto.subdomain);
+    if (!isAvailable) {
+      throw new ConflictException('Subdomain already in use');
+    }
     return this.createTenantUseCase.execute(createTenantDto);
   }
 
