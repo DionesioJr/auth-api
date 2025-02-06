@@ -1,7 +1,6 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { config } from 'dotenv';
 import { ResponseInterceptor } from './utils/response.interceptor';
 
@@ -24,16 +23,6 @@ async function bootstrap() {
       forbidNonWhitelisted: true,
     })
   );
-
-  // Configurar Swagger
-  const swaggerConfig = new DocumentBuilder()
-    .setTitle('Auth API')
-    .setDescription('API for users')
-    .setVersion('1.0')
-    .build();
-
-  const document = SwaggerModule.createDocument(app, swaggerConfig);
-  SwaggerModule.setup('api', app, document);
 
   // Usar a porta definida no .env ou a porta padrão 8000
   const port = process.env.APP_PORT || 3000;
