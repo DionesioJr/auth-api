@@ -3,13 +3,13 @@ import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class ValidateTokenUseCase {
+export class SelectInstanceUseCase {
   constructor(
     private readonly jwtService: JwtService,
     private readonly prisma: PrismaService
   ) {}
 
-  private readonly logger = new Logger(ValidateTokenUseCase.name);
+  private readonly logger = new Logger(SelectInstanceUseCase.name);
 
   async execute(headers: Headers): Promise<any> {
     this.logger.log('Validating token.');

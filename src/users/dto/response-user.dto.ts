@@ -28,7 +28,7 @@ export class ResponseUserDto {
 
   @IsOptional()
   @IsString()
-  avatar?: string;
+  avatar_url?: string;
 
   @IsInt()
   is_active: number;

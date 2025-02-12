@@ -1,13 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { ResponseUserDto } from './dto/response-user.dto';
+
 import { CreateUserUseCase } from './usecases/create-user.usecase';
 import { FindAllUsersUseCase } from './usecases/find-all-users.usecase';
 import { FindOneUserUseCase } from './usecases/find-one-user.usecase';
 import { UpdateUserUseCase } from './usecases/update-user.usecase';
 import { RemoveUserUseCase } from './usecases/remove-user.usecase';
-import { ResponseUserDto } from './dto/response-user.dto';
 import { FindUserByEmailUseCase } from './usecases/find-user-by-email.usecase';
+import { FindUsersByAccountUseCase } from '../accounts/usecases/find-users-by-account.usecase';
 
 @Injectable()
 export class UsersService {
@@ -17,7 +19,8 @@ export class UsersService {
     private readonly findOneUserUseCase: FindOneUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly removeUserUseCase: RemoveUserUseCase,
-    private readonly findUserByEmailUseCase: FindUserByEmailUseCase
+    private readonly findUserByEmailUseCase: FindUserByEmailUseCase,
+    private readonly findUsersByAccountUseCase: FindUsersByAccountUseCase
   ) {}
 
   async create(createUserDto: CreateUserDto): Promise<ResponseUserDto> {
@@ -42,5 +45,9 @@ export class UsersService {
 
   async remove(id: number): Promise<ResponseUserDto> {
     return this.removeUserUseCase.execute(id);
+  }
+
+  async findUsersByAccount(accountId: number): Promise<any> {
+    return this.findUsersByAccountUseCase.execute(accountId);
   }
 }

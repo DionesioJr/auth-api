@@ -1,17 +1,27 @@
 import { Injectable, Logger, ConflictException, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateAccountDto } from '../dto/create-account.dto';
 import { ResponseAccountDto } from '../dto/response-account.dto';
 import { plainToInstance } from 'class-transformer';
+import { ValidateInstanceUseCase } from './validate-instance.usecase';
 
 @Injectable()
 export class CreateAccountUseCase {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly validateInstanceUseCase: ValidateInstanceUseCase
+  ) {}
 
   private readonly logger = new Logger(CreateAccountUseCase.name);
 
   async execute(createAccountDto: CreateAccountDto): Promise<ResponseAccountDto> {
     const { email } = createAccountDto;
+
+    // Validar subdomínio usando o caso de uso específico
+    const { isAvailable } = await this.validateInstanceUseCase.execute(createAccountDto.instance);
+    if (!isAvailable) {
+      throw new ConflictException('Subdomain already in use');
+    }
 
     this.logger.log(`Creating a new account with email: ${email}`);
 

@@ -9,147 +9,49 @@ datasource db {
 
 model accounts {
   id             Int              @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  tenant_id      Int              @db.UnsignedInt
+  instance       String           @unique(map: "instances_UNIQUE") @db.VarChar(255)
   is_active      Boolean          @default(true)
   is_deleted     Boolean          @default(false)
   name           String?          @db.VarChar(255)
   email          String           @unique(map: "email_UNIQUE") @db.VarChar(255)
   phone          String?          @db.VarChar(15)
-  logo           String?          @db.LongText
+  avatar_url     String?          @db.LongText
   created_at     DateTime         @default(now()) @db.Timestamp(0)
   updated_at     DateTime         @default(now()) @db.Timestamp(0)
-  tenants        tenants          @relation(fields: [tenant_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_accounts_tenants1")
+  deleted_at     DateTime?        @db.Timestamp(0)
   accounts_users accounts_users[]
-  api_keys       api_keys[]
 
-  @@id([id, tenant_id])
-  @@index([tenant_id], map: "fk_accounts_tenants1_idx")
+  @@id([id, instance])
 }
 
 model accounts_users {
-  id         Int      @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  account_id Int      @db.UnsignedInt
-  user_id    Int      @db.UnsignedInt
-  is_owner   Int      @default(0) @db.TinyInt
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_accounts_has_users_users")
-  accounts   accounts @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_table1_accounts1")
+  id         Int                 @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  account_id Int                 @db.UnsignedInt
+  user_id    Int                 @db.UnsignedInt
+  role       accounts_users_role @default(member)
+  users      users               @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_accounts_has_users_users")
+  accounts   accounts            @relation(fields: [account_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_table1_accounts1")
 
+  @@id([id, account_id, user_id])
   @@index([user_id], map: "fk_accounts_has_users_users_idx")
   @@index([account_id], map: "fk_table1_accounts1_idx")
 }
 
-model api_key_status {
-  id          Int        @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name        String     @db.VarChar(255)
-  description String?    @db.VarChar(255)
-  api_keys    api_keys[]
-}
-
-model api_keys {
-  int               BigInt         @id @default(autoincrement()) @db.UnsignedBigInt
-  accounts_id       Int            @db.UnsignedInt
-  api_key_status_id Int            @db.UnsignedInt
-  private_token     String         @db.Text
-  public_token      String         @db.Text
-  ip_address        String?        @db.VarChar(45)
-  last_used_at      DateTime?      @default(now()) @db.Timestamp(0)
-  created_at        DateTime       @default(now()) @db.Timestamp(0)
-  accounts          accounts       @relation(fields: [accounts_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_accounts_access_keys_accounts1")
-  api_key_status    api_key_status @relation(fields: [api_key_status_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_api_keys_api_key_status1")
-
-  @@index([accounts_id], map: "fk_accounts_access_keys_accounts1_idx")
-  @@index([api_key_status_id], map: "fk_api_keys_api_key_status1_idx")
-}
-
-model languages {
-  id              Int               @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name            String            @unique(map: "name_UNIQUE") @db.VarChar(255)
-  icon_url        String?           @db.Text
-  users_languages users_languages[]
-}
-
-model modules {
-  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                 String                 @db.VarChar(255)
-  description          String?                @db.Text
-  created_at           DateTime               @default(now()) @db.Timestamp(0)
-  updated_at           DateTime               @default(now()) @db.Timestamp(0)
-  profiles_permissions profiles_permissions[]
-}
-
-model permissions {
-  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                 String                 @db.VarChar(255)
-  description          String?                @db.Text
-  created_at           DateTime               @default(now()) @db.Timestamp(0)
-  updated_at           DateTime               @default(now()) @db.Timestamp(0)
-  profiles_permissions profiles_permissions[]
-}
-
-model profiles {
-  id                   Int                    @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                 String                 @db.VarChar(255)
-  description          String?                @db.VarChar(255)
-  created_at           DateTime               @default(now()) @db.Timestamp(0)
-  updated_at           DateTime               @default(now()) @db.Timestamp(0)
-  profiles_permissions profiles_permissions[]
-  users_profiles       users_profiles[]
-}
-
-model profiles_permissions {
-  id            Int         @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  profile_id    Int         @db.UnsignedInt
-  module_id     Int         @db.UnsignedInt
-  permission_id Int         @db.UnsignedInt
-  has_access    Int         @default(0) @db.TinyInt
-  created_at    DateTime    @default(now()) @db.Timestamp(0)
-  updated_at    DateTime    @default(now()) @db.Timestamp(0)
-  modules       modules     @relation(fields: [module_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_profile_permissions_modules1")
-  permissions   permissions @relation(fields: [permission_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_profile_permissions_permissions1")
-  profiles      profiles    @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_profile_permissions_profiles1")
-
-  @@index([module_id], map: "fk_profile_permissions_modules1_idx")
-  @@index([permission_id], map: "fk_profile_permissions_permissions1_idx")
-  @@index([profile_id], map: "fk_profile_permissions_profiles1_idx")
-}
-
-model tenants {
-  id                Int        @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  subdomain         String     @unique(map: "subdomain_UNIQUE") @db.VarChar(255)
-  database_name     String     @db.VarChar(255)
-  database_user     String     @db.VarChar(255)
-  database_password String     @db.VarChar(255)
-  database_host     String     @db.VarChar(255)
-  database_port     Int
-  is_active         Boolean    @default(true)
-  created_at        DateTime   @default(now()) @db.Timestamp(0)
-  updated_at        DateTime   @default(now()) @db.Timestamp(0)
-  accounts          accounts[]
-}
-
-model time_zones {
-  id              Int               @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name            String            @db.VarChar(255)
-  users_languages users_languages[]
-}
-
 model users {
-  id                         Int                          @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  name                       String                       @db.VarChar(255)
-  email                      String                       @unique(map: "email_UNIQUE") @db.VarChar(255)
-  email_verified_at          DateTime?                    @db.DateTime(0)
-  password                   String?                      @db.Text
-  phone                      String?                      @db.VarChar(15)
-  avatar                     String?                      @db.LongText
-  is_active                  Int                          @default(1) @db.TinyInt
-  is_deleted                 Int                          @default(0) @db.TinyInt
-  created_at                 DateTime                     @default(now()) @db.Timestamp(0)
-  updated_at                 DateTime                     @default(now()) @db.Timestamp(0)
-  accounts_users             accounts_users[]
-  users_access_keys          users_access_keys[]
-  users_languages            users_languages[]
-  users_notifications_emails users_notifications_emails[]
-  users_profiles             users_profiles[]
+  id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  name              String              @db.VarChar(255)
+  email             String              @unique(map: "email_UNIQUE") @db.VarChar(255)
+  email_verified_at DateTime?           @db.DateTime(0)
+  password          String              @db.VarChar(255)
+  phone             String?             @db.VarChar(15)
+  avatar_url        String?             @db.LongText
+  is_active         Int                 @default(1) @db.TinyInt
+  is_deleted        Int                 @default(0) @db.TinyInt
+  created_at        DateTime            @default(now()) @db.Timestamp(0)
+  updated_at        DateTime            @default(now()) @db.Timestamp(0)
+  deleted_at        DateTime?           @db.Timestamp(0)
+  accounts_users    accounts_users[]
+  users_access_keys users_access_keys[]
 }
 
 model users_access_keys {
@@ -169,37 +71,8 @@ model users_access_keys {
   @@index([user_id], map: "fk_tokens_users1_idx")
 }
 
-model users_languages {
-  id           Int        @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
-  user_id      Int        @db.UnsignedInt
-  language_id  Int        @db.UnsignedInt
-  time_zone_id Int        @db.UnsignedInt
-  languages    languages  @relation(fields: [language_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_has_languages_languages1")
-  time_zones   time_zones @relation(fields: [time_zone_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_has_languages_time_zones1")
-  users        users      @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_has_languages_users1")
-
-  @@index([language_id], map: "fk_users_has_languages_languages1_idx")
-  @@index([time_zone_id], map: "fk_users_has_languages_time_zones1_idx")
-  @@index([user_id], map: "fk_users_has_languages_users1_idx")
-}
-
-model users_notifications_emails {
-  id        Int    @id @default(autoincrement())
-  user_id   Int    @db.UnsignedInt
-  email     String @db.VarChar(255)
-  is_active Int    @default(0) @db.TinyInt
-  users     users  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_user_notification_emails_users1")
-
-  @@index([user_id], map: "fk_user_notification_emails_users1_idx")
-}
-
-model users_profiles {
-  user_id    Int      @db.UnsignedInt
-  profile_id Int      @db.UnsignedInt
-  profiles   profiles @relation(fields: [profile_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_has_profiles_profiles1")
-  users      users    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_users_has_profiles_users1")
-
-  @@id([user_id, profile_id])
-  @@index([profile_id], map: "fk_users_has_profiles_profiles1_idx")
-  @@index([user_id], map: "fk_users_has_profiles_users1_idx")
+enum accounts_users_role {
+  owner
+  admin
+  member
 }

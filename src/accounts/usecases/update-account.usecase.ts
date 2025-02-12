@@ -1,5 +1,5 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { UpdateAccountDto } from '../dto/update-account.dto';
 import { ResponseAccountDto } from '../dto/response-account.dto';
 import { plainToInstance } from 'class-transformer';

@@ -31,4 +31,9 @@ export class AuthController {
   validate(@Headers() headers: Headers) {
     return this.authService.validate(headers);
   }
+
+  @Post('select-instance')
+  selectInstance(@Headers() headers: Headers) {
+    return this.authService.selectInstance(headers);
+  }
 }

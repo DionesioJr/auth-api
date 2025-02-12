@@ -1,10 +1,10 @@
 export class ResponseAccountDto {
   id: number;
-  tenant_id: number;
+  instance: string;
   name: string;
   email?: string;
   phone?: string;
-  logo?: string;
+  avatar_url?: string;
   is_active: boolean;
   is_deleted: boolean;
   created_at: Date;

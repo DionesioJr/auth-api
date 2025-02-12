@@ -1,5 +1,5 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 // DTOs
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -12,11 +12,10 @@ import { FindOneAccountUseCase } from './usecases/find-one-account.usecase';
 import { UpdateAccountUseCase } from './usecases/update-account.usecase';
 import { RemoveAccountUseCase } from './usecases/remove-account.usecase';
 import { FindUsersByAccountUseCase } from './usecases/find-users-by-account.usecase';
-import { FindUserByEmailUseCase } from 'src/users/usecases/find-user-by-email.usecase';
 
 // Services
-import { TenantsService } from 'src/tenants/tenants.service';
 import { UsersService } from 'src/users/users.service';
+import { FindAllAccountsByUserIdUseCase } from './usecases/find-all-accounts-by-user-id.usecase';
 
 @Injectable()
 export class AccountsService {
@@ -28,19 +27,21 @@ export class AccountsService {
     private readonly updateAccountUseCase: UpdateAccountUseCase,
     private readonly removeAccountUseCase: RemoveAccountUseCase,
     private readonly findUsersByAccountUseCase: FindUsersByAccountUseCase,
-    private readonly tenantsService: TenantsService,
+    private readonly findAllAccountsByUserIdUseCase: FindAllAccountsByUserIdUseCase,
+
     private readonly usersService: UsersService
   ) {}
 
   async create(createAccountRequestDto: RequestCreateAccountDto): Promise<{
     user_id: number;
     name: string;
-    subdomain: string;
+    instance: string;
     email: string;
     phone?: string;
+    avatar_url?: string;
     password: string;
   }> {
-    const { name, subdomain, email, phone, password } = createAccountRequestDto;
+    const { name, instance, email, phone, password, avatar_url } = createAccountRequestDto;
 
     // Verifica se o e-mail já está em uso
     let emailExists;
@@ -58,15 +59,13 @@ export class AccountsService {
       throw new ConflictException(`Email ${email} is already in use.`);
     }
 
-    // Criar o tenant
-    const tenant = await this.tenantsService.create({ subdomain });
-
     // Criar a conta
     const account = await this.createAccountUseCase.execute({
       name,
       email,
-      tenant_id: tenant.id,
       phone,
+      instance,
+      avatar_url,
     });
 
     // Criar o usuário
@@ -75,6 +74,7 @@ export class AccountsService {
       email,
       phone,
       password,
+      avatar_url,
     });
 
     // Associar usuário à conta
@@ -82,11 +82,11 @@ export class AccountsService {
       data: {
         account_id: account.id,
         user_id: users.id,
-        is_owner: 1,
+        role: 'owner',
       },
     });
 
-    return { user_id: users.id, name, subdomain, email, phone, password };
+    return { user_id: users.id, name, instance, email, phone, password };
   }
 
   async findAll(): Promise<any> {
@@ -107,5 +107,9 @@ export class AccountsService {
 
   async findUsersByAccount(accountId: number): Promise<any> {
     return this.findUsersByAccountUseCase.execute(accountId);
+  }
+
+  async findAllAccountsByUserId(userId: number): Promise<any> {
+    return this.findAllAccountsByUserIdUseCase.execute(userId);
   }
 }

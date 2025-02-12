@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt';
 import { Injectable, Logger, ConflictException, InternalServerErrorException } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
 import { plainToInstance } from 'class-transformer';

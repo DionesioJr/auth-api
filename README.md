@@ -18,61 +18,50 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ---
 
-## Áreas Funcionais
-
-- ✅ Autenticação
-- ✅ Gerenciamento de Tenants
-- ✅ Gerenciamento de Contas
-- ✅ Gerenciamento de Usuários
-
----
-
 ### **Autenticação**
 
-|     | Verbo HTTP | Endpoint URL   | Descrição                                                  |
-| --- | ---------- | -------------- | ---------------------------------------------------------- |
-| ✅  | POST       | /auth/signin   | Realiza login e retorna um token JWT.                      |
-| ✅  | POST       | /auth/signout  | Encerra a sessão do usuário.                               |
-| ✅  | POST       | /auth/signup   | Cria novo usuário e retorna um token JWT.                  |
-| ✅  | POST       | /auth/refresh  | Renova o token de autenticação.                            |
-| ✅  | POST       | /auth/validate | Valida o token e a origem da requisição (dispositivo, IP). |
-
----
-
-### **Gerenciamento de Tenants**
-
-|     | Verbo HTTP | Endpoint URL                           | Descrição                                           |
-| --- | ---------- | -------------------------------------- | --------------------------------------------------- |
-| ✅  | GET        | /tenants                               | Lista todos os tenants cadastrados no sistema.      |
-| ✅  | GET        | /tenants/:id                           | Detalha um tenant específico.                       |
-| ✅  | POST       | /tenants                               | Cria um novo tenant com as informações necessárias. |
-| ✅  | PUT        | /tenants/:id                           | Atualiza informações de um tenant específico.       |
-| ✅  | DELETE     | /tenants/:id                           | Remove um tenant do sistema.                        |
-| ✅  | GET        | /tenants/:id/accounts                  | Lista as contas associadas a um tenant específico.  |
-| ✅  | GET        | /tenants/validate-subdomain/:subdomain | Valida se um subdomínio já foi cadastrado.          |
+|     | Método | Endpoint              | Descrição                                                                        | Permissões |
+| --- | ------ | --------------------- | -------------------------------------------------------------------------------- | ---------- |
+| ✅  | POST   | /auth/signin          | Realiza login e retorna um token JWT.                                            | Todos      |
+| ✅  | POST   | /auth/signout         | Encerra a sessão do usuário.                                                     | Todos      |
+| ✅  | POST   | /auth/signup          | Cria novo usuário e retorna um token JWT.                                        | Todos      |
+| ✅  | POST   | /auth/refresh         | Renova o token de autenticação.                                                  | Todos      |
+| ✅  | POST   | /auth/validate        | Valida o token e a origem da requisição.                                         | Todos      |
+| ❌  | POST   | /auth/select-instance | Valida o token e a origem da requisição gerando um novo com a instância passada. | Todos      |
 
 ---
 
 ### **Gerenciamento de Contas**
 
-|     | Verbo HTTP | Endpoint URL               | Descrição                                            |
-| --- | ---------- | -------------------------- | ---------------------------------------------------- |
-| ✅  | GET        | /accounts                  | Lista todas as contas registradas no sistema.        |
-| ✅  | GET        | /accounts/:id              | Detalha uma conta específica.                        |
-| ✅  | POST       | /accounts                  | Cria uma nova conta.                                 |
-| ✅  | PUT        | /accounts/:id              | Atualizar informações de uma conta.                  |
-| ✅  | DELETE     | /accounts/:id              | Remove uma conta.                                    |
-| ✅  | GET        | /accounts/:accountId/users | Lista de usuários associados a uma conta específica. |
+|     | Método | Endpoint                              | Descrição                                            | Permissões           |
+| --- | ------ | ------------------------------------- | ---------------------------------------------------- | -------------------- |
+| ✅  | GET    | /accounts                             | Lista todas as contas.                               | Owner, Admin         |
+| ✅  | GET    | /accounts/:id                         | Detalha uma conta específica.                        | Owner, Admin, Member |
+| ✅  | POST   | /accounts                             | Cria uma nova conta.                                 | Owner                |
+| ✅  | PUT    | /accounts/:id                         | Atualizar informações de uma conta.                  | Owner, Admin         |
+| ✅  | DELETE | /accounts/:id                         | Remove uma conta.                                    | Owner                |
+| ✅  | GET    | /accounts/:accountId/users            | Lista de usuários associados a uma conta específica. | Owner, Admin, Member |
+| ❌  | GET    | /accounts/validate-instance/:instance | Valida se uma instância já foi cadastrada.           | Todos                |
 
 ---
 
 ### **Gerenciamento de Usuários**
 
-|     | Verbo HTTP | Endpoint URL        | Descrição                                 |
-| --- | ---------- | ------------------- | ----------------------------------------- |
-| ✅  | GET        | /users              | Lista todos os usuários.                  |
-| ✅  | GET        | /users/:id          | Detalha um usuário específico.            |
-| ✅  | GET        | /users/email/:email | Detalha um usuário específico, por email. |
-| ✅  | POST       | /users              | Cria um novo usuário.                     |
-| ✅  | PUT        | /users/:id          | Atualizar informações de um usuário.      |
-| ✅  | DELETE     | /users/:id          | Remove um usuário.                        |
+|     | Método | Endpoint            | Descrição                                 | Permissões           |
+| --- | ------ | ------------------- | ----------------------------------------- | -------------------- |
+| ✅  | GET    | /users              | Lista todos os usuários.                  | Owner, Admin         |
+| ✅  | GET    | /users/:id          | Detalha um usuário específico.            | Owner, Admin, Member |
+| ✅  | GET    | /users/email/:email | Detalha um usuário específico, por email. | Owner, Admin         |
+| ✅  | POST   | /users              | Cria um novo usuário.                     | Owner, Admin         |
+| ✅  | PUT    | /users/:id          | Atualizar informações de um usuário.      | Owner, Admin         |
+| ✅  | DELETE | /users/:id          | Remove um usuário.                        | Owner                |
+
+---
+
+### **Vinculação Usuários ↔ Contas**
+
+|     | Método | Endpoint                               | Descrição                     | Permissões                  |
+| --- | ------ | -------------------------------------- | ----------------------------- | --------------------------- |
+| ❌  | POST   | /accounts/{account_id}/users           | Adicionar usuário a uma conta | Admin, Account_User (Owner) |
+| ❌  | GET    | /accounts/{account_id}/users           | Listar usuários da conta      | Admin, Account_User         |
+| ❌  | DELETE | /accounts/{account_id}/users/{user_id} | Remover usuário da conta      | Admin, Account_User (Owner) |

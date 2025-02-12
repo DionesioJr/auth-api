@@ -2,7 +2,8 @@ import { IsEmail, IsInt, IsOptional, IsString, MaxLength } from 'class-validator
 
 export class CreateAccountDto {
   @IsInt()
-  tenant_id: number;
+  @MaxLength(255)
+  instance: string;
 
   @IsString()
   @MaxLength(255)
@@ -19,5 +20,5 @@ export class CreateAccountDto {
 
   @IsOptional()
   @IsString()
-  logo?: string;
+  avatar_url?: string;
 }

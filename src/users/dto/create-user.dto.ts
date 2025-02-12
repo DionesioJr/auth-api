@@ -25,7 +25,7 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsString()
-  avatar?: string;
+  avatar_url?: string;
 
   @IsOptional()
   @IsInt()
@@ -36,6 +36,6 @@ export class CreateUserDto {
   is_deleted?: number;
 
   @IsOptional()
-  @IsInt()
-  is_owner?: number; // Define se o usuário será proprietário da conta (1 para true)
+  @IsString()
+  owner?: string;
 }

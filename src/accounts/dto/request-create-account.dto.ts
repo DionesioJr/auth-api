@@ -2,7 +2,8 @@ import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class RequestCreateAccountDto {
   @IsString()
-  subdomain: string;
+  @MaxLength(255)
+  instance: string;
 
   @IsString()
   @MaxLength(255)
@@ -19,7 +20,7 @@ export class RequestCreateAccountDto {
 
   @IsOptional()
   @IsString()
-  logo?: string;
+  avatar_url?: string;
 
   @IsOptional()
   @IsString()
