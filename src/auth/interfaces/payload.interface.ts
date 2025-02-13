@@ -1,7 +1,6 @@
 export interface IPayload {
   sub: number;
-  instances: string[];
-  instance: string;
+  instance?: string;
   email: string;
   ip: string;
   device: string;

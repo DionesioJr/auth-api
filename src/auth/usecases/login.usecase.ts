@@ -31,12 +31,12 @@ export class LoginUseCase {
     }
 
     const accounts = await this.accountsService.findAllAccountsByUserId(user.id);
-    const instances = accounts.map((t) => t.instance);
+    if (!accounts) {
+      throw new UnauthorizedException('Accounts not found');
+    }
 
     const payload: IPayload = {
       sub: user.id,
-      instances: instances,
-      instance: '',
       email: user.email,
       ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
       device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',

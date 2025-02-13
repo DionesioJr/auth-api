@@ -55,13 +55,13 @@ export class RefreshTokenUseCase {
     }
 
     const accounts = await this.accountsService.findAllAccountsByUserId(user.id);
-    const instances = accounts.map((t) => t.instance);
+    if (!accounts) {
+      throw new UnauthorizedException('Accounts not found');
+    }
 
     const payload: IPayload = {
       sub: user.id,
       email: user.email,
-      instances: instances,
-      instance: '',
       ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
       device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
       user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',

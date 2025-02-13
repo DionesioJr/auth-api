@@ -37,6 +37,13 @@ export class ValidateTokenUseCase {
       throw new UnauthorizedException('User not found');
     }
 
+    const existingKey = await this.prisma.users_access_keys.findFirst({
+      where: { access_token: accessToken, is_active: 1 },
+    });
+    if (!existingKey) {
+      throw new UnauthorizedException('Invalid or inactive token');
+    }
+
     try {
       this.jwtService.verify(accessToken, { secret: process.env.JWT_SECRET });
 
