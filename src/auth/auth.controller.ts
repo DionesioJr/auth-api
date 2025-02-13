@@ -1,6 +1,7 @@
 import { Controller, Post, Body, Headers } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
+import { InstanceDto } from './dto/instance.dto';
 import { RequestCreateAccountDto } from 'src/accounts/dto/request-create-account.dto';
 
 @Controller('auth')
@@ -33,7 +34,7 @@ export class AuthController {
   }
 
   @Post('select-instance')
-  selectInstance(@Headers() headers: Headers) {
-    return this.authService.selectInstance(headers);
+  selectInstance(@Body() instanceDto: InstanceDto, @Headers() headers: Headers) {
+    return this.authService.selectInstance(instanceDto, headers);
   }
 }

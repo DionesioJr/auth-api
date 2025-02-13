@@ -1,6 +1,7 @@
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { InstanceDto } from '../dto/instance.dto';
 
 @Injectable()
 export class SelectInstanceUseCase {
@@ -11,8 +12,12 @@ export class SelectInstanceUseCase {
 
   private readonly logger = new Logger(SelectInstanceUseCase.name);
 
-  async execute(headers: Headers): Promise<any> {
+  async execute(instance: InstanceDto, headers: Headers): Promise<any> {
     this.logger.log('Validating token.');
+
+    if (!instance) {
+      throw new UnauthorizedException('Authorization header is missing');
+    }
 
     // Acessar headers corretamente
     const authHeader = headers['authorization'];
