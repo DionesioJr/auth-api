@@ -11,6 +11,7 @@ import { RemoveAccountUseCase } from './usecases/remove-account.usecase';
 import { ValidateInstanceUseCase } from './usecases/validate-instance.usecase';
 import { FindAllAccountsByUserIdUseCase } from './usecases/find-all-accounts-by-user-id.usecase';
 import { FindUsersByAccountUseCase } from 'src/accounts/usecases/find-users-by-account.usecase';
+import { FindOneAccountByEmailUseCase } from './usecases/find-one-account-by-email.usecase';
 
 @Module({
   imports: [UsersModule],
@@ -25,6 +26,7 @@ import { FindUsersByAccountUseCase } from 'src/accounts/usecases/find-users-by-a
     ValidateInstanceUseCase,
     FindAllAccountsByUserIdUseCase,
     FindUsersByAccountUseCase,
+    FindOneAccountByEmailUseCase,
   ],
   exports: [AccountsService],
 })
