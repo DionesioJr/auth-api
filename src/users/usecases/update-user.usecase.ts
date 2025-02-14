@@ -26,7 +26,7 @@ export class UpdateUserUseCase {
         where: { email: updateUserDto.email },
       });
       if (existingUserByEmail) {
-        throw new ConflictException('Email already in use');
+        throw new ConflictException('Email already in use for another user.');
       }
     }
 

@@ -22,7 +22,7 @@ export class CreateUserUseCase {
       where: { email: email },
     });
     if (existingUserByEmail) {
-      throw new ConflictException('Email already in use');
+      throw new ConflictException('Email already in use for another user.');
     }
 
     try {

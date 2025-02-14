@@ -15,7 +15,7 @@ export class FindOneAccountByEmailUseCase {
     const account = await this.prisma.accounts.findUnique({ where: { email } });
 
     if (!account) {
-      throw new NotFoundException(`User with email ${email} not found.`);
+      throw new NotFoundException(`Account with email ${email} not found.`);
     }
 
     return plainToInstance(ResponseAccountDto, account);

@@ -20,7 +20,7 @@ export class CreateAccountUseCase {
     // Validar subdomínio usando o caso de uso específico
     const { isAvailable } = await this.validateInstanceUseCase.execute(createAccountDto.instance);
     if (!isAvailable) {
-      throw new ConflictException('Subdomain already in use');
+      throw new ConflictException('Inatance already in use');
     }
 
     this.logger.log(`Creating a new account with email: ${email}`);
@@ -30,7 +30,7 @@ export class CreateAccountUseCase {
       where: { email },
     });
     if (existingAccount) {
-      throw new ConflictException('Email already in use');
+      throw new ConflictException('Email already in use for another account');
     }
 
     try {

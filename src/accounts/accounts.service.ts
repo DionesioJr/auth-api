@@ -35,8 +35,8 @@ export class AccountsService {
   ) {}
 
   async create(createAccountRequestDto: RequestCreateAccountDto): Promise<{
-    user_id?: number;
-    name?: string;
+    user_id: number;
+    name: string;
     instance: string;
     email: string;
     phone?: string;
@@ -70,30 +70,34 @@ export class AccountsService {
       avatar_url,
     });
 
-    const findeUser = await this.usersService.findOneByEmail(email);
+    let user;
+    try {
+      user = await this.usersService.findOneByEmail(email);
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        user = null;
+      }
+    }
 
-    if (findeUser.id) {
+    if (!user) {
       // Criar o usuário
-      const users = await this.usersService.create({
+      user = await this.usersService.create({
         name,
         email,
         phone,
         password,
         avatar_url,
       });
-
-      // Associar usuário à conta
-      await this.prisma.accounts_users.create({
-        data: {
-          account_id: account.id,
-          user_id: users.id,
-          role: 'owner',
-        },
-      });
-      return { user_id: users.id, name, instance, email, phone, password };
     }
-
-    return { name, instance, email, phone, password };
+    // Associar usuário à conta
+    await this.prisma.accounts_users.create({
+      data: {
+        account_id: account.id,
+        user_id: user.id,
+        role: 'owner',
+      },
+    });
+    return { user_id: user.id, name, instance, email, phone, password };
   }
 
   async findAll(): Promise<any> {
