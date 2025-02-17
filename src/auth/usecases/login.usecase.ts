@@ -38,9 +38,6 @@ export class LoginUseCase {
     const payload: IPayload = {
       sub: user.id,
       email: user.email,
-      ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
-      device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
-      user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
     };
     const tokens: ITokens = this.generateTokensUseCase.execute(payload);
 

@@ -62,9 +62,6 @@ export class RefreshTokenUseCase {
     const payload: IPayload = {
       sub: user.id,
       email: user.email,
-      ip: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
-      device: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
-      user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
     };
     const tokens: ITokens = this.generateTokensUseCase.execute(payload);
 
@@ -76,6 +73,7 @@ export class RefreshTokenUseCase {
         refresh_token: tokens.refresh_token,
         last_used_at: new Date(),
         ip_address: typeof headers['ip'] === 'string' ? headers['ip'] : '0.0.0.0',
+        device_name: typeof headers['device-name'] === 'string' ? headers['device-name'] : '',
         user_agent: typeof headers['user-agent'] === 'string' ? headers['user-agent'] : '',
       },
     });

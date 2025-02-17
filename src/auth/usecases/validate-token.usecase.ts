@@ -61,8 +61,9 @@ export class ValidateTokenUseCase {
       });
 
       if (
-        (headers['id'] && headers['id'] !== existingKey.ip_address) ||
-        (headers['user-gent'] && headers['user-gent'] !== existingKey.user_agent)
+        (headers['ip'] && headers['ip'] !== existingKey.ip_address) ||
+        (headers['user-gent'] && headers['user-gent'] !== existingKey.user_agent) ||
+        (headers['device'] && headers['device'] !== existingKey.device_name)
       ) {
         throw new UnauthorizedException('Token validation failed');
       }
