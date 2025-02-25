@@ -1,4 +1,4 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
 import * as dotenv from 'dotenv';
 
 import { Injectable, Logger, UnauthorizedException } from '@nestjs/common';
@@ -25,8 +25,11 @@ export class LoginUseCase {
     this.logger.log(`Logging in user with email: ${loginDto.email}`);
 
     const user = await this.prisma.users.findUnique({ where: { email: loginDto.email } });
+    if (!user) {
+      throw new UnauthorizedException('Access denied');
+    }
 
-    if (!user || !(await bcrypt.compare(loginDto.password, user.password || ''))) {
+    if (!(await bcrypt.compare(loginDto.password, user.password || ''))) {
       throw new UnauthorizedException('Invalid email or password');
     }
 
@@ -44,6 +47,7 @@ export class LoginUseCase {
     // Salvando as chaves de acesso no banco de dados
     const data_create_access = {
       user_id: user.id,
+      uuid: user.uuid,
       access_token: tokens.access_token,
       refresh_token: tokens.refresh_token,
       is_active: 1,

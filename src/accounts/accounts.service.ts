@@ -1,5 +1,6 @@
 import { ConflictException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { v4 as uuidv4 } from 'uuid';
 
 // DTOs
 import { UpdateAccountDto } from './dto/update-account.dto';
@@ -63,6 +64,7 @@ export class AccountsService {
 
     // Criar a conta
     const account = await this.createAccountUseCase.execute({
+      uuid: uuidv4(),
       name,
       email,
       phone,
@@ -82,6 +84,7 @@ export class AccountsService {
     if (!user) {
       // Criar o usuário
       user = await this.usersService.create({
+        uuid: uuidv4(),
         name,
         email,
         phone,

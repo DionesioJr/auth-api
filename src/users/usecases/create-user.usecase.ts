@@ -1,10 +1,11 @@
-import * as bcrypt from 'bcrypt';
+import * as bcrypt from 'bcryptjs';
+import { plainToInstance } from 'class-transformer';
+import { randomBytes } from 'crypto';
+import { v4 as uuidv4 } from 'uuid';
 import { Injectable, Logger, ConflictException, InternalServerErrorException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { ResponseUserDto } from '../dto/response-user.dto';
-import { plainToInstance } from 'class-transformer';
-import { randomBytes } from 'crypto';
 
 @Injectable()
 export class CreateUserUseCase {
@@ -30,12 +31,13 @@ export class CreateUserUseCase {
       if (!createUserDto.password) {
         createUserDto.password = randomBytes(5).toString('hex');
       }
-      const hashedPassword = await bcrypt.hash(createUserDto.password, 10);
+      const hashedPassword = bcrypt.hashSync(createUserDto.password, 10);
 
       // Criar o usuário vinculado à conta
       const user = await this.prisma.users.create({
         data: {
-          ...createUserDto, // Copia os dados do DTO
+          ...createUserDto,
+          uuid: uuidv4(),
           password: hashedPassword, // Substitui a senha pela versão criptografada
         },
       });

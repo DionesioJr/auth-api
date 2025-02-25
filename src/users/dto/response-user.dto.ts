@@ -6,6 +6,10 @@ export class ResponseUserDto {
   id: number;
 
   @IsString()
+  @MaxLength(36)
+  uuid: string;
+
+  @IsString()
   @MaxLength(255)
   name: string;
 

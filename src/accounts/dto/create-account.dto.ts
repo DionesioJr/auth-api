@@ -9,6 +9,10 @@ export class CreateAccountDto {
   @MaxLength(255)
   name: string;
 
+  @IsString()
+  @MaxLength(36)
+  uuid: string;
+
   @IsEmail()
   @MaxLength(255)
   email: string;

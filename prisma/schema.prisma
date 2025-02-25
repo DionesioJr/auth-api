@@ -8,7 +8,8 @@ datasource db {
 }
 
 model accounts {
-  id             Int              @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  id             Int              @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  uuid           String           @unique(map: "uuid_UNIQUE") @db.Char(36)
   instance       String           @unique(map: "instances_UNIQUE") @db.VarChar(255)
   is_active      Boolean          @default(true)
   is_deleted     Boolean          @default(false)
@@ -20,8 +21,6 @@ model accounts {
   updated_at     DateTime         @default(now()) @db.Timestamp(0)
   deleted_at     DateTime?        @db.Timestamp(0)
   accounts_users accounts_users[]
-
-  @@id([id, instance])
 }
 
 model accounts_users {
@@ -39,6 +38,7 @@ model accounts_users {
 
 model users {
   id                Int                 @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  uuid              String              @unique(map: "uuid_UNIQUE") @db.Char(36)
   name              String              @db.VarChar(255)
   email             String              @unique(map: "email_UNIQUE") @db.VarChar(255)
   email_verified_at DateTime?           @db.DateTime(0)
@@ -56,6 +56,7 @@ model users {
 
 model users_access_keys {
   id            Int       @id @unique(map: "id_UNIQUE") @default(autoincrement()) @db.UnsignedInt
+  uuid          String    @unique(map: "uuid_UNIQUE") @db.Char(36)
   user_id       Int       @db.UnsignedInt
   access_token  String    @db.Text
   refresh_token String    @db.Text
