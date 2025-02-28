@@ -11,13 +11,13 @@ export class UpdateUserUseCase {
 
   private readonly logger = new Logger(UpdateUserUseCase.name);
 
-  async execute(id: number, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
-    this.logger.log(`Updating user with ID: ${id}.`);
+  async execute(uuid: string, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
+    this.logger.log(`Updating user with UUID: ${uuid}.`);
 
     // Verificar se o usuário existe
-    const existingUser = await this.prisma.users.findUnique({ where: { id } });
+    const existingUser = await this.prisma.users.findUnique({ where: { uuid } });
     if (!existingUser) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
+      throw new NotFoundException(`User with UUID ${uuid} not found.`);
     }
 
     // Verificar se o email já existe
@@ -41,7 +41,7 @@ export class UpdateUserUseCase {
     try {
       // Atualizar o usuário no banco de dados
       const user = await this.prisma.users.update({
-        where: { id },
+        where: { uuid },
         data: updatedData, // Dados atualizados com a senha criptografada (se foi fornecida)
       });
 

@@ -9,13 +9,13 @@ export class FindOneUserUseCase {
 
   private readonly logger = new Logger(FindOneUserUseCase.name);
 
-  async execute(id: number): Promise<ResponseUserDto> {
-    this.logger.log(`Fetching user with ID: ${id}.`);
+  async execute(uuid: string): Promise<ResponseUserDto> {
+    this.logger.log(`Fetching user with UUID: ${uuid}.`);
 
-    const user = await this.prisma.users.findUnique({ where: { id } });
+    const user = await this.prisma.users.findUnique({ where: { uuid } });
 
     if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found.`);
+      throw new NotFoundException(`User with UUID ${uuid} not found.`);
     }
 
     return plainToInstance(ResponseUserDto, user);

@@ -31,20 +31,20 @@ export class UsersService {
     return this.findAllUsersUseCase.execute();
   }
 
-  async findOne(id: number): Promise<ResponseUserDto> {
-    return this.findOneUserUseCase.execute(id);
+  async findOne(uuid: string): Promise<ResponseUserDto> {
+    return this.findOneUserUseCase.execute(uuid);
   }
 
   async findOneByEmail(email: string): Promise<ResponseUserDto> {
     return this.findUserByEmailUseCase.execute(email);
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
-    return this.updateUserUseCase.execute(id, updateUserDto);
+  async update(uuid: string, updateUserDto: UpdateUserDto): Promise<ResponseUserDto> {
+    return this.updateUserUseCase.execute(uuid, updateUserDto);
   }
 
-  async remove(id: number): Promise<ResponseUserDto> {
-    return this.removeUserUseCase.execute(id);
+  async remove(uuid: string): Promise<ResponseUserDto> {
+    return this.removeUserUseCase.execute(uuid);
   }
 
   async findUsersByAccount(accountId: number): Promise<any> {
