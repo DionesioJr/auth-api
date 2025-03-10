@@ -1,0 +1,803 @@
+{
+  "info": {
+    "_postman_id": "a8f5e9c7-3b4d-4e5f-9a6b-7c8d9e0f1a2b",
+    "name": "Auth API - Microservice",
+    "description": "Coleção de endpoints para a API de autenticação e gerenciamento de contas e usuários.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.access_token) {",
+                  "    pm.environment.set(\"token\", jsonData.access_token);",
+                  "}",
+                  "",
+                  "if (jsonData && jsonData.refresh_token) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"{{user_email}}\",\n    \"password\": \"{{user_password}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/signin",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "signin"
+              ]
+            },
+            "description": "Realiza login e retorna um token JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/signout",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "signout"
+              ]
+            },
+            "description": "Encerra a sessão do usuário."
+          },
+          "response": []
+        },
+        {
+          "name": "Cadastro",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.access_token) {",
+                  "    pm.environment.set(\"token\", jsonData.access_token);",
+                  "}",
+                  "",
+                  "if (jsonData && jsonData.refresh_token) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
+                  "}",
+                  "",
+                  "if (jsonData && jsonData.user && jsonData.user.uuid) {",
+                  "    pm.environment.set(\"user_uuid\", jsonData.user.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{user_name}}\",\n    \"email\": \"{{user_email}}\",\n    \"password\": \"{{user_password}}\",\n    \"phone\": \"{{user_phone}}\",\n    \"instance\": \"{{instance_name}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/signup",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "signup"
+              ]
+            },
+            "description": "Cria novo usuário e retorna um token JWT."
+          },
+          "response": []
+        },
+        {
+          "name": "Renovar Token",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.access_token) {",
+                  "    pm.environment.set(\"token\", jsonData.access_token);",
+                  "}",
+                  "",
+                  "if (jsonData && jsonData.refresh_token) {",
+                  "    pm.environment.set(\"refresh_token\", jsonData.refresh_token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{refresh_token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/refresh",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Renova o token de autenticação."
+          },
+          "response": []
+        },
+        {
+          "name": "Validar Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/auth/validate",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "validate"
+              ]
+            },
+            "description": "Valida o token e a origem da requisição."
+          },
+          "response": []
+        },
+        {
+          "name": "Selecionar Instância",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"instance\": \"{{instance_name}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/auth/select-instance",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "auth",
+                "select-instance"
+              ]
+            },
+            "description": "Seleciona uma instância para o usuário."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints relacionados à autenticação e autorização."
+    },
+    {
+      "name": "Contas",
+      "item": [
+        {
+          "name": "Listar Contas",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.length > 0 && jsonData[0].uuid) {",
+                  "    pm.environment.set(\"account_uuid\", jsonData[0].uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/accounts",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "accounts"
+              ]
+            },
+            "description": "Lista todas as contas."
+          },
+          "response": []
+        },
+        {
+          "name": "Detalhes da Conta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/account/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{account_uuid}}",
+                  "description": "UUID da conta"
+                }
+              ]
+            },
+            "description": "Detalha uma conta específica."
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Conta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.uuid) {",
+                  "    pm.environment.set(\"account_uuid\", jsonData.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{account_name}}\",\n    \"instance\": \"{{instance_name}}\",\n    \"email\": \"{{account_email}}\",\n    \"phone\": \"{{account_phone}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/account",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account"
+              ]
+            },
+            "description": "Cria uma nova conta."
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Conta",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{account_name}} Atualizado\",\n    \"email\": \"{{account_email}}\",\n    \"phone\": \"{{account_phone}}\",\n    \"avatarUrl\": \"{{avatar_url}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/account/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{account_uuid}}",
+                  "description": "UUID da conta"
+                }
+              ]
+            },
+            "description": "Atualizar informações de uma conta."
+          },
+          "response": []
+        },
+        {
+          "name": "Remover Conta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/account/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{account_uuid}}",
+                  "description": "UUID da conta"
+                }
+              ]
+            },
+            "description": "Remove uma conta."
+          },
+          "response": []
+        },
+        {
+          "name": "Listar Usuários da Conta",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/account/:uuid/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account",
+                ":uuid",
+                "users"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{account_uuid}}",
+                  "description": "UUID da conta"
+                }
+              ]
+            },
+            "description": "Lista de usuários associados a uma conta específica."
+          },
+          "response": []
+        },
+        {
+          "name": "Minha Conta",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.uuid) {",
+                  "    pm.environment.set(\"account_uuid\", jsonData.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/account/me",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "account",
+                "me"
+              ]
+            },
+            "description": "Retorna os dados da conta e do usuário responsável autenticado."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints relacionados ao gerenciamento de contas."
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "Listar Usuários",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.length > 0 && jsonData[0].uuid) {",
+                  "    pm.environment.set(\"user_uuid\", jsonData[0].uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/users",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "users"
+              ]
+            },
+            "description": "Lista todos os usuários."
+          },
+          "response": []
+        },
+        {
+          "name": "Detalhes do Usuário",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{user_uuid}}",
+                  "description": "UUID do usuário"
+                }
+              ]
+            },
+            "description": "Detalha um usuário específico."
+          },
+          "response": []
+        },
+        {
+          "name": "Buscar Usuário por Email",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.uuid) {",
+                  "    pm.environment.set(\"user_uuid\", jsonData.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user/email/:email",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                "email",
+                ":email"
+              ],
+              "variable": [
+                {
+                  "key": "email",
+                  "value": "{{user_email}}",
+                  "description": "Email do usuário"
+                }
+              ]
+            },
+            "description": "Detalha um usuário específico, por email."
+          },
+          "response": []
+        },
+        {
+          "name": "Criar Usuário",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var jsonData = pm.response.json();",
+                  "",
+                  "if (jsonData && jsonData.uuid) {",
+                  "    pm.environment.set(\"user_uuid\", jsonData.uuid);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{user_name}}\",\n    \"email\": \"{{user_email}}\",\n    \"password\": \"{{user_password}}\",\n    \"phone\": \"{{user_phone}}\",\n    \"avatarUrl\": \"{{avatar_url}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user"
+              ]
+            },
+            "description": "Cria um novo usuário."
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Usuário",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{user_name}} Atualizado\",\n    \"email\": \"{{user_email}}\",\n    \"phone\": \"{{user_phone}}\",\n    \"avatarUrl\": \"{{avatar_url}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{user_uuid}}",
+                  "description": "UUID do usuário"
+                }
+              ]
+            },
+            "description": "Atualizar informações de um usuário."
+          },
+          "response": []
+        },
+        {
+          "name": "Atualizar Usuário Parcialmente",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"{{user_name}} Parcialmente Atualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/user/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{user_uuid}}",
+                  "description": "UUID do usuário"
+                }
+              ]
+            },
+            "description": "Atualizar parcialmente um usuário."
+          },
+          "response": []
+        },
+        {
+          "name": "Remover Usuário",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user/:uuid",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "user",
+                ":uuid"
+              ],
+              "variable": [
+                {
+                  "key": "uuid",
+                  "value": "{{user_uuid}}",
+                  "description": "UUID do usuário"
+                }
+              ]
+            },
+            "description": "Remove um usuário."
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints relacionados ao gerenciamento de usuários."
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "https://api.domain.com/v1",
+      "type": "string"
+    }
+  ]
+}

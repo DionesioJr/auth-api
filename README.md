@@ -20,48 +20,41 @@ Esta API permite o gerenciamento de contas, usuários, perfis, idiomas, autentic
 
 ### **Autenticação**
 
-|     | Método | Endpoint              | Descrição                                                                        | Permissões |
-| --- | ------ | --------------------- | -------------------------------------------------------------------------------- | ---------- |
-| ✅  | POST   | /auth/signin          | Realiza login e retorna um token JWT.                                            | Todos      |
-| ✅  | POST   | /auth/signout         | Encerra a sessão do usuário.                                                     | Todos      |
-| ✅  | POST   | /auth/signup          | Cria novo usuário e retorna um token JWT.                                        | Todos      |
-| ✅  | POST   | /auth/refresh         | Renova o token de autenticação.                                                  | Todos      |
-| ✅  | POST   | /auth/validate        | Valida o token e a origem da requisição.                                         | Todos      |
-| ❌  | POST   | /auth/select-instance | Valida o token e a origem da requisição gerando um novo com a instância passada. | Todos      |
+|     | Método | Endpoint       | Descrição                                 | Permissões |
+| --- | ------ | -------------- | ----------------------------------------- | ---------- |
+| ✅  | POST   | /auth/signin   | Realiza login e retorna um token JWT.     | Todos      |
+| ✅  | POST   | /auth/signout  | Encerra a sessão do usuário.              | Todos      |
+| ✅  | POST   | /auth/signup   | Cria novo usuário e retorna um token JWT. | Todos      |
+| ✅  | POST   | /auth/refresh  | Renova o token de autenticação.           | Todos      |
+| ✅  | POST   | /auth/validate | Valida o token e a origem da requisição.  | Todos      |
 
 ---
 
 ### **Gerenciamento de Contas**
 
-|     | Método | Endpoint                              | Descrição                                            | Permissões           |
-| --- | ------ | ------------------------------------- | ---------------------------------------------------- | -------------------- |
-| ✅  | GET    | /accounts                             | Lista todas as contas.                               | Owner, Admin         |
-| ✅  | GET    | /accounts/:id                         | Detalha uma conta específica.                        | Owner, Admin, Member |
-| ✅  | POST   | /accounts                             | Cria uma nova conta.                                 | Owner                |
-| ✅  | PUT    | /accounts/:id                         | Atualizar informações de uma conta.                  | Owner, Admin         |
-| ✅  | DELETE | /accounts/:id                         | Remove uma conta.                                    | Owner                |
-| ✅  | GET    | /accounts/:accountId/users            | Lista de usuários associados a uma conta específica. | Owner, Admin, Member |
-| ❌  | GET    | /accounts/validate-instance/:instance | Valida se uma instância já foi cadastrada.           | Todos                |
+|     | Método | Endpoint                     | Descrição                                                       | Permissões                  |
+| --- | ------ | ---------------------------- | --------------------------------------------------------------- | --------------------------- |
+| ✅  | GET    | /accounts                    | Lista todas as contas.                                          | Owner, Admin                |
+| ✅  | GET    | /account/:uuid               | Detalha uma conta específica.                                   | Owner, Admin, Member        |
+| ✅  | POST   | /account                     | Cria uma nova conta.                                            | Owner                       |
+| ✅  | PUT    | /account/:uuid               | Atualizar informações de uma conta.                             | Owner, Admin                |
+| ✅  | DELETE | /account/:uuid               | Remove uma conta.                                               | Owner                       |
+| ✅  | GET    | /account/:uuid/users         | Lista de usuários associados a uma conta específica.            | Owner, Admin, Member        |
+| ✅  | GET    | /accounts/me/with-owner      | Retorna os dados da conta e do usuário responsável autenticado. | Usuário Autenticado         |
+| ❌  | DELETE | /accounts/:uuid/user/:uuid   | Remover usuário da conta                                        | Admin, Account_User (Owner) |
+| ❌  | GET    | /account/:uuid/users         | Listar usuários da conta                                        | Admin, Account_User         |
+| ❌  | POST   | /account/:uuid/users         | Adicionar usuário a uma conta                                   | Admin, Account_User (Owner) |
+| ❌  | GET    | /accounts/validate/:username | Valida se uma instância já foi cadastrada.                      | Todos                       |
 
 ---
 
 ### **Gerenciamento de Usuários**
 
-|     | Método | Endpoint            | Descrição                                 | Permissões           |
-| --- | ------ | ------------------- | ----------------------------------------- | -------------------- |
-| ✅  | GET    | /users              | Lista todos os usuários.                  | Owner, Admin         |
-| ✅  | GET    | /users/:id          | Detalha um usuário específico.            | Owner, Admin, Member |
-| ✅  | GET    | /users/email/:email | Detalha um usuário específico, por email. | Owner, Admin         |
-| ✅  | POST   | /users              | Cria um novo usuário.                     | Owner, Admin         |
-| ✅  | PUT    | /users/:id          | Atualizar informações de um usuário.      | Owner, Admin         |
-| ✅  | DELETE | /users/:id          | Remove um usuário.                        | Owner                |
-
----
-
-### **Vinculação Usuários ↔ Contas**
-
-|     | Método | Endpoint                               | Descrição                     | Permissões                  |
-| --- | ------ | -------------------------------------- | ----------------------------- | --------------------------- |
-| ❌  | POST   | /accounts/{account_id}/users           | Adicionar usuário a uma conta | Admin, Account_User (Owner) |
-| ❌  | GET    | /accounts/{account_id}/users           | Listar usuários da conta      | Admin, Account_User         |
-| ❌  | DELETE | /accounts/{account_id}/users/{user_id} | Remover usuário da conta      | Admin, Account_User (Owner) |
+|     | Método | Endpoint           | Descrição                                 | Permissões           |
+| --- | ------ | ------------------ | ----------------------------------------- | -------------------- |
+| ✅  | GET    | /users             | Lista todos os usuários.                  | Owner, Admin         |
+| ✅  | GET    | /user/:uuid        | Detalha um usuário específico.            | Owner, Admin, Member |
+| ✅  | GET    | /user/email/:email | Detalha um usuário específico, por email. | Owner, Admin         |
+| ✅  | POST   | /user              | Cria um novo usuário.                     | Owner, Admin         |
+| ✅  | PUT    | /user/:uuid        | Atualizar informações de um usuário.      | Owner, Admin         |
+| ✅  | DELETE | /user/:uuid        | Remove um usuário.                        | Owner                |
